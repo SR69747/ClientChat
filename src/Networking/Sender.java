@@ -10,12 +10,13 @@ import java.net.Socket;
 public class Sender implements Runnable {
 
     private static BufferedWriter out;
-    private Socket socket;
-    private String loginDetails;
+    private static Socket socket;
+    private static String loginDetails;
+    private static String selectedUserName = "";
 
     public Sender(Socket socket, String loginDetails) {
-        this.socket = socket;
-        this.loginDetails = loginDetails;
+        Sender.socket = socket;
+        Sender.loginDetails = loginDetails;
     }
 
     public void run() {
@@ -50,8 +51,13 @@ public class Sender implements Runnable {
         String messageToServer;
         if ((messageToServer = Chat.getMessageSendTextField().getText()) != null && !messageToServer.trim().isEmpty()) {
             try {
-                out.write(messageToServer + '\n');
-                out.flush();
+                if (!selectedUserName.isEmpty()) {
+                    out.write(String.format("/to ~%s~%s\n", selectedUserName.trim(), messageToServer));
+                    out.flush();
+                } else {
+                    out.write(messageToServer + '\n');
+                    out.flush();
+                }
                 Chat.getMessageSendTextField().setText("");
                 Chat.getMessageDisplayPane().setText(Chat.getMessageDisplayPane().getText() + '\n' + "You : " + messageToServer);
             } catch (IOException err) {
@@ -59,6 +65,10 @@ public class Sender implements Runnable {
                 closeSenderResources();
             }
         }
+    }
+
+    public static void setSelectedUserName(String selectedUserName) {
+        Sender.selectedUserName = selectedUserName;
     }
 
     static void closeSenderResources() {

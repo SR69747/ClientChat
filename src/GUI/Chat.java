@@ -3,6 +3,8 @@ package GUI;
 import Networking.Sender;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -59,6 +61,7 @@ public class Chat extends JPanel implements Runnable, KeyListener {
             mainFrame.add(userScrollPane, BorderLayout.EAST);
             messageDisplayPane.setText("\n    Welcome to chat\n    _____________\n");
             onlineUserTable.getColumnModel().getColumn(1).setCellRenderer(new IconRenderer());
+            onlineUserTable.getSelectionModel().addListSelectionListener(new CellSelected());
             sendButton.addActionListener(new SendButtonListener());
 
             //Getting list of users online
@@ -148,6 +151,22 @@ public class Chat extends JPanel implements Runnable, KeyListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             Sender.sendMessageToServer();
+        }
+    }
+
+    private static class CellSelected implements ListSelectionListener {
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            int selectedRow;
+            String selectedUsername;
+            if ((selectedRow = onlineUserTable.getSelectedRow()) > -1) {
+                selectedUsername = onlineUserTable.getValueAt(selectedRow, 0).toString();
+                Sender.setSelectedUserName(selectedUsername);
+            }
+            if (selectedRow == -1) {
+                Sender.setSelectedUserName("");
+            }
+
         }
     }
 }
