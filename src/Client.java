@@ -1,7 +1,6 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -18,11 +17,13 @@ public class Client extends JPanel implements Runnable, KeyListener {
     private String loginDetails;
     ImageIcon pictureImage;
 
-
     Client(Socket socket, String loginDetails) {
         this.socket = socket;
         this.loginDetails = loginDetails;
     }
+
+    static ImageIcon onlineIcon = new ImageIcon("H:\\onlineIcon2.jpg");
+    static ImageIcon offlineIcon = new ImageIcon("H:\\offlineIcon2.jpg");
 
     //This is main chatting GUI
     private static JFrame mainFrame = new JFrame();
@@ -151,24 +152,32 @@ public class Client extends JPanel implements Runnable, KeyListener {
             case START_OF_STREAM:
                 Object[] objects = new Object[2];
 
-                ImageIcon icon = new ImageIcon("C:\\lgim\\code\\java\\Status.png");
-                ImageIcon icon2 = new ImageIcon("C:\\lgim\\code\\java\\Status2.png");
-
+                int counter = 0;
                 while (!(messageFromServer = in.readLine()).equals(END_OF_STREAM)) {
                     String username = messageFromServer.split(",")[0];
                     String onlineStatus = messageFromServer.split(",")[1];
                     objects[0] = username;
+
                     switch (onlineStatus) {
                         case "true":
-                            objects[1] = icon;
+                            objects[1] = onlineIcon;
                             break;
                         case "false":
-                            objects[1] = icon2;
+                            objects[1] = offlineIcon;
                             break;
                     }
-                    defaultTableModel.addRow(objects);
+                    if (defaultTableModel.getRowCount() == counter) {
+                        defaultTableModel.addRow(objects);
+                    }
+                   if (defaultTableModel.getRowCount() != 0 && defaultTableModel.getValueAt(counter, 0).equals(username)) {
+                        defaultTableModel.setValueAt(objects[1], counter, 1);
+                    }
+                    ++counter;
                 }
+
                 onlineUserTable.repaint();
+
+
                 messageForConsole = false;
                 break;
             case UPDATE_USERS:
@@ -190,19 +199,20 @@ public class Client extends JPanel implements Runnable, KeyListener {
         return messageForConsole;
     }
 
-    static class IconRenderer extends DefaultTableCellRenderer {
+    class IconRenderer extends DefaultTableCellRenderer {
         private IconRenderer() {
             super();
         }
 
         public void setValue(Object value) {
             if (value == null) {
-                setText("");
+                setIcon(offlineIcon);
             } else {
                 setIcon((ImageIcon) value);
             }
         }
     }
+
 
     private void launchChattingGui() {
         SwingUtilities.invokeLater(new Runnable() {
@@ -222,6 +232,8 @@ public class Client extends JPanel implements Runnable, KeyListener {
                 userScrollPane.setPreferredSize(new Dimension(135, 500));
                 onlineUserTable.setModel(defaultTableModel);
                 onlineUserTable.setAutoCreateRowSorter(true);
+                onlineUserTable.setRowHeight(25);
+//                onlineUserTable.setColumnModel(;
                 defaultTableModel.setColumnIdentifiers(UserColumnNames);
                 messageTextField.addKeyListener(Client.this);
                 sendButton.setPreferredSize(new Dimension(135, 25));
