@@ -1,6 +1,6 @@
-package Networking;
+package networking;
 
-import GUI.Chat;
+import gui.Chat;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

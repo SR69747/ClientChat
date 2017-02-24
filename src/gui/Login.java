@@ -1,6 +1,6 @@
-package GUI;
+package gui;
 
-import Networking.Sender;
+import networking.Sender;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

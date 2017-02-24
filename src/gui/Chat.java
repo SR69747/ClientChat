@@ -1,6 +1,6 @@
-package GUI;
+package gui;
 
-import Networking.Sender;
+import networking.Sender;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -18,7 +18,7 @@ public class Chat extends JPanel implements Runnable, KeyListener {
     private static final int WINDOW_WIDTH = 500;
     private static final int WINDOW_HEIGHT = 600;
 
-    //Components for Chat GUI
+    //Components for Chat gui
     private static JButton sendButton = new JButton("Send");
     private static JPanel sendPanel = new JPanel();
 

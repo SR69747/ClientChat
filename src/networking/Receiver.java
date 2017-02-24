@@ -1,7 +1,7 @@
-package Networking;
+package networking;
 
-import GUI.Chat;
-import GUI.Login;
+import gui.Chat;
+import gui.Login;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class Receiver implements Runnable {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             //This block checks server's response to our login.
-            //If our login is valid, then draw GUI
+            //If our login is valid, then draw gui
             if ((messageFromServer = in.readLine()) != null) {
                 switch (messageFromServer) {
                     case DECLINE_CONNECTION:
@@ -41,8 +41,7 @@ public class Receiver implements Runnable {
                         break;
                     case ACCEPT_CONNECTION:
                         Login.disableLoginFrame();
-
-                        //Start GUI
+                        //Start gui
                         new Thread(new Chat()).start();
                         break;
                 }
@@ -88,7 +87,6 @@ public class Receiver implements Runnable {
             case UPDATE_USERS:
                 Sender.sendMessageToServer("/online");
                 messageForConsole = false;
-                // Update users method goes here!
                 break;
 
             case START_OF_STREAM:
@@ -108,7 +106,6 @@ public class Receiver implements Runnable {
                             objects[1] = Chat.getOfflineIcon();
                             break;
                     }
-
                     if (Chat.getTableModelRowCount() == counter) {
                         Chat.addRowToTableModel(objects);
                     }
