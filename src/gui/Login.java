@@ -97,5 +97,4 @@ public class Login {
     static String getUsername() {
         return usernameField.getText();
     }
-
 }

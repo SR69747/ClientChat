@@ -104,6 +104,7 @@ public class Receiver implements Runnable {
         String stringImage = messageFromServer.split("#")[1];
         byte[] bytes = Base64.getMimeDecoder().decode(stringImage.getBytes());
         ImageIcon pictureImage = new ImageIcon(bytes);
+        Chat.drawImageOnTextPane(pictureImage);
     }
 
     private static void populateOnlineUserTable() {
