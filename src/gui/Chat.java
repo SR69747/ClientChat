@@ -66,12 +66,6 @@ public class Chat extends JPanel implements Runnable {
         });
     }
 
-    //Improve this !
-    public static void closeChattingGui() {
-        mainFrame.setVisible(false);
-    }
-
-    //Methods which are used in Receiver class
     public static String getTableModelValue(int row) {
         String data = "No Data";
         if (defaultTableModel.getRowCount() != 0) {
@@ -114,5 +108,10 @@ public class Chat extends JPanel implements Runnable {
 
     public static JTable getOnlineUserTable() {
         return onlineUserTable;
+    }
+
+    //Improve this !
+    public static void closeChattingGui() {
+        mainFrame.setVisible(false);
     }
 }
