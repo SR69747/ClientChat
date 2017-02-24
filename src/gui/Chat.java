@@ -1,18 +1,15 @@
 package gui;
 
+import listeners.SelectedUserTableCellListener;
+import listeners.SendButtonListener;
+import listeners.TextFieldKeyListener;
 import networking.Sender;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
-public class Chat extends JPanel implements Runnable, KeyListener {
+public class Chat extends JPanel implements Runnable {
 
     private static JFrame mainFrame = new JFrame();
     private static final int WINDOW_WIDTH = 500;
@@ -51,7 +48,7 @@ public class Chat extends JPanel implements Runnable, KeyListener {
             onlineUserTable.setAutoCreateRowSorter(true);
             onlineUserTable.setRowHeight(25);
             defaultTableModel.setColumnIdentifiers(UserColumnNames);
-            messageSendTextField.addKeyListener(Chat.this);
+            messageSendTextField.addKeyListener(new TextFieldKeyListener());
             sendButton.setPreferredSize(new Dimension(135, 25));
             sendPanel.setLayout(new BorderLayout(8, 8));
             sendPanel.add(messageSendTextField, BorderLayout.CENTER);
@@ -60,8 +57,8 @@ public class Chat extends JPanel implements Runnable, KeyListener {
             mainFrame.add(new JScrollPane(messageDisplayPane), BorderLayout.CENTER);
             mainFrame.add(userScrollPane, BorderLayout.EAST);
             messageDisplayPane.setText("\n    Welcome to chat\n    _____________\n");
-            onlineUserTable.getColumnModel().getColumn(1).setCellRenderer(new IconRenderer());
-            onlineUserTable.getSelectionModel().addListSelectionListener(new CellSelected());
+            onlineUserTable.getColumnModel().getColumn(1).setCellRenderer(new UserTableIconRenderer());
+            onlineUserTable.getSelectionModel().addListSelectionListener(new SelectedUserTableCellListener());
             sendButton.addActionListener(new SendButtonListener());
 
             //Getting list of users online
@@ -72,20 +69,6 @@ public class Chat extends JPanel implements Runnable, KeyListener {
     //Improve this !
     public static void closeChattingGui() {
         mainFrame.setVisible(false);
-    }
-
-    static class IconRenderer extends DefaultTableCellRenderer {
-        IconRenderer() {
-            super();
-        }
-
-        public void setValue(Object value) {
-            if (value == null) {
-                setIcon(offlineIcon);
-            } else {
-                setIcon((ImageIcon) value);
-            }
-        }
     }
 
     //Methods which are used in Receiver class
@@ -113,24 +96,6 @@ public class Chat extends JPanel implements Runnable, KeyListener {
         onlineUserTable.repaint();
     }
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        System.out.println("Pressed " + e.getKeyCode());
-        if (e.getKeyCode() == 10) {
-            Sender.sendMessageToServer();
-        }
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-
-    }
-
     public static JTextPane getMessageDisplayPane() {
         return messageDisplayPane;
     }
@@ -147,26 +112,7 @@ public class Chat extends JPanel implements Runnable, KeyListener {
         return offlineIcon;
     }
 
-    private static class SendButtonListener extends AbstractAction {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Sender.sendMessageToServer();
-        }
-    }
-
-    private static class CellSelected implements ListSelectionListener {
-        @Override
-        public void valueChanged(ListSelectionEvent e) {
-            int selectedRow;
-            String selectedUsername;
-            if ((selectedRow = onlineUserTable.getSelectedRow()) > -1) {
-                selectedUsername = onlineUserTable.getValueAt(selectedRow, 0).toString();
-                Sender.setSelectedUserName(selectedUsername);
-            }
-            if (selectedRow == -1) {
-                Sender.setSelectedUserName("");
-            }
-
-        }
+    public static JTable getOnlineUserTable() {
+        return onlineUserTable;
     }
 }
