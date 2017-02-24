@@ -3,12 +3,14 @@ package networking;
 import gui.Chat;
 import gui.Login;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 
 public class Receiver implements Runnable {
 
@@ -16,9 +18,10 @@ public class Receiver implements Runnable {
     //They are not shown in a console
     private static final String ACCEPT_CONNECTION = "AC:+";
     private static final String DECLINE_CONNECTION = "EX:0";
-    private static final String START_OF_STREAM = "ST:R";
+    private static final String START_OF_CONNECTED_USERS_STREAM = "ST:R";
     private static final String END_OF_STREAM = "EN:0";
     private static final String UPDATE_USERS = "UP:A";
+    private static final String IMAGE_STRING = "IM:G";
 
     private Socket socket;
     private static BufferedReader in;
@@ -71,6 +74,11 @@ public class Receiver implements Runnable {
     private static boolean checkServerSpecialMessages() throws IOException {
         boolean showMessageInGui = true;
 
+        if (messageFromServer.contains(IMAGE_STRING)) {
+            convertStringToImage();
+            showMessageInGui = false;
+        }
+
         switch (messageFromServer) {
             case ACCEPT_CONNECTION:
                 System.out.println("Connection Accepted\n");
@@ -84,12 +92,18 @@ public class Receiver implements Runnable {
                 Sender.sendMessageToServer("/online");
                 showMessageInGui = false;
                 break;
-            case START_OF_STREAM:
+            case START_OF_CONNECTED_USERS_STREAM:
                 populateOnlineUserTable();
                 showMessageInGui = false;
                 break;
         }
         return showMessageInGui;
+    }
+
+    private static void convertStringToImage() {
+        String stringImage = messageFromServer.split("#")[1];
+        byte[] bytes = Base64.getMimeDecoder().decode(stringImage.getBytes());
+        ImageIcon pictureImage = new ImageIcon(bytes);
     }
 
     private static void populateOnlineUserTable() {
