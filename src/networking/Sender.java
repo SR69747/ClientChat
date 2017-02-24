@@ -6,6 +6,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class Sender implements Runnable {
 
@@ -19,15 +21,25 @@ public class Sender implements Runnable {
         Sender.loginDetails = loginDetails;
     }
 
+    /**
+     * This block sends messages to server.
+     * In order to send a message, sendMessageToServer method should be called.
+     * When Sender thread is launched, it launches Receiver thread for receiving servers response and
+     * sends loginDetails string to the server for checks.
+     * Note that when Sender thread ends, BufferedWriter is not closed, as it is used in sendMessageToServer
+     * methods.
+     * BufferedWriter is closed when receiver thread is completed or when it received DECLINE_CONNECTION message from the server.
+     */
     public void run() {
         try {
             out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+
+            new Thread(new Receiver(socket)).start();
 
             //Takes login details and sends them to server for checks
             out.write(loginDetails + '\n');
             out.flush();
 
-            new Thread(new Receiver(socket)).start();
 
         } catch (IOException e) {
             System.out.println("Error: " + e.getMessage());
@@ -35,6 +47,12 @@ public class Sender implements Runnable {
         }
     }
 
+    /**
+     * This method sends a message to server without formatting it.
+     * This method can be used to send special commands to the server.
+     *
+     * @param messageToServer your message without formatting.
+     */
     public static void sendMessageToServer(String messageToServer) {
         if (messageToServer != null && !messageToServer.trim().isEmpty()) {
             try {
@@ -47,6 +65,11 @@ public class Sender implements Runnable {
         }
     }
 
+    /**
+     * This method gets a message from TextField in Chat class, formats it and sends to the server.
+     * Afterwards, this method clears current textField and sets new text in MessageDisplayPane.
+     * Note that some message checks are done.
+     */
     public static void sendMessageToServer() {
         String messageToServer;
         if ((messageToServer = Chat.getMessageSendTextField().getText()) != null && !messageToServer.trim().isEmpty()) {
@@ -59,7 +82,7 @@ public class Sender implements Runnable {
                     out.flush();
                 }
                 Chat.getMessageSendTextField().setText("");
-                Chat.getMessageDisplayPane().setText(Chat.getMessageDisplayPane().getText() + '\n' + "You : " + messageToServer);
+                Chat.getMessageDisplayPane().setText(Chat.getMessageDisplayPane().getText() + '\n' + getCurrentTimeStamp() + "You : " + messageToServer);
             } catch (IOException err) {
                 System.out.println("Error: " + err.getMessage());
                 closeSenderResources();
@@ -67,10 +90,31 @@ public class Sender implements Runnable {
         }
     }
 
+    /**
+     * This method is used in SelectedUserTableCellListener class.
+     * Every time our user selects or deselects a client row in the table, it will rewrite selectedUserName
+     * to a new one.
+     *
+     * @param selectedUserName a username selected in UserTable in Chat class.
+     */
     public static void setSelectedUserName(String selectedUserName) {
         Sender.selectedUserName = selectedUserName;
     }
 
+    /**
+     * This method returns a current time stamp.
+     *
+     * @return String in this format [hh:mm:ss].
+     */
+    static String getCurrentTimeStamp() {
+        return '[' + LocalTime.now().format(DateTimeFormatter.ofPattern("hh:mm:ss")) + "] ";
+    }
+
+    /**
+     * This method closes BufferedWriter.
+     * Note that server socket is not closed in ClientChat program
+     * as it is handled by server itself when we send it DECLINE_CONNECTION message.
+     */
     static void closeSenderResources() {
         try {
             out.close();

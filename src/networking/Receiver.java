@@ -8,14 +8,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 
 public class Receiver implements Runnable {
 
-    //Special strings, which server can send us
-    //They are not shown in a console
+    /**
+     * Special strings, which server can send us.
+     * They are not shown in a console.
+     */
     private static final String ACCEPT_CONNECTION = "AC:+";
     private static final String DECLINE_CONNECTION = "EX:0";
     private static final String START_OF_CONNECTED_USERS_STREAM = "ST:R";
@@ -32,7 +32,7 @@ public class Receiver implements Runnable {
     }
 
     /**
-     * This block receives server messages and responds to them.
+     * This block receives server messages and responds to them automatically.
      * At the start of Receiver thread, server's response to our login is checked.
      * If our login is not valid, "Invalid login message" is displayed and message receiving loop is not started.
      * If our login is valid, launch Chat GUI and disable LoginFrame. Note that this thread enters receiving loop afterwards.
@@ -59,8 +59,7 @@ public class Receiver implements Runnable {
             while ((messageFromServer = in.readLine()) != null && !messageFromServer.equals(DECLINE_CONNECTION)) {
                 if (checkServerSpecialMessages()) {
                     System.out.println(messageFromServer);
-                    Chat.getMessageDisplayPane().setText(Chat.getMessageDisplayPane().getText() + '\n' +
-                            '[' + LocalTime.now().format(DateTimeFormatter.ofPattern("hh:mm:ss")) + "] " + messageFromServer);
+                    Chat.getMessageDisplayPane().setText(Chat.getMessageDisplayPane().getText() + '\n' + Sender.getCurrentTimeStamp() + messageFromServer);
                 }
             }
 
@@ -164,7 +163,7 @@ public class Receiver implements Runnable {
     /**
      * This method closes BufferedReader.
      * Note that server socket is not closed in ClientChat program
-     * as it is handled by server itself when we send it EX:0 message.
+     * as it is handled by server itself when we send it DECLINE_CONNECTION message.
      */
     private static void closeReceiverResources() {
         try {
