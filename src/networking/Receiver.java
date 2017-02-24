@@ -21,7 +21,7 @@ public class Receiver implements Runnable {
     private static final String START_OF_CONNECTED_USERS_STREAM = "ST:R";
     private static final String END_OF_STREAM = "EN:0";
     private static final String UPDATE_USERS = "UP:A";
-    private static final String IMAGE_STRING = "IM:G";
+    private static final String IMAGE_STRING = "IM:G#";
 
     private Socket socket;
     private static BufferedReader in;
@@ -31,12 +31,19 @@ public class Receiver implements Runnable {
         this.socket = socket;
     }
 
+    /**
+     * This block receives server messages and responds to them.
+     * At the start of Receiver thread, server's response to our login is checked.
+     * If our login is not valid, "Invalid login message" is displayed and message receiving loop is not started.
+     * If our login is valid, launch Chat GUI and disable LoginFrame. Note that this thread enters receiving loop afterwards.
+     * Receiving loop receives messages and checks whether they are special.
+     * If they are, then certain methods are triggered.
+     * If not, then messageFromServer is formatted and displayed in chatting GUI.
+     */
     public void run() {
         try {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            //This block checks server's response to our login.
-            //If our login is valid, then draw Chat GUI
             if ((messageFromServer = in.readLine()) != null) {
                 switch (messageFromServer) {
                     case DECLINE_CONNECTION:
@@ -44,15 +51,12 @@ public class Receiver implements Runnable {
                         break;
                     case ACCEPT_CONNECTION:
                         Login.disableLoginFrame();
-                        //Start gui
                         new Thread(new Chat()).start();
                         break;
                 }
             }
 
-            //Communication block, receives messages
             while ((messageFromServer = in.readLine()) != null && !messageFromServer.equals(DECLINE_CONNECTION)) {
-                //If incoming message is not special, then display it
                 if (checkServerSpecialMessages()) {
                     System.out.println(messageFromServer);
                     Chat.getMessageDisplayPane().setText(Chat.getMessageDisplayPane().getText() + '\n' +
@@ -63,14 +67,19 @@ public class Receiver implements Runnable {
         } catch (IOException e) {
             System.out.println("Error: " + e.getMessage());
         } finally {
-            // End of the whole program
             closeReceiverResources();
             Sender.closeSenderResources();
             Chat.closeChattingGui();
-            //Implement socket.close()
         }
     }
 
+    /**
+     * This block checks server messages.
+     * If they are special, then certain methods are triggered.
+     *
+     * @return boolean showMessageInGui.
+     * @throws IOException if message checks catch an exception, then program will be closed.
+     */
     private static boolean checkServerSpecialMessages() throws IOException {
         boolean showMessageInGui = true;
 
@@ -100,13 +109,24 @@ public class Receiver implements Runnable {
         return showMessageInGui;
     }
 
+    /**
+     * This method decodes Base64 encoded image.
+     * Note that this method is triggered when messageFromServer contains IMAGE_STRING.
+     */
     private static void convertStringToImage() {
         String stringImage = messageFromServer.split("#")[1];
-        byte[] bytes = Base64.getMimeDecoder().decode(stringImage.getBytes());
-        ImageIcon pictureImage = new ImageIcon(bytes);
-        Chat.drawImageOnTextPane(pictureImage);
+        if (!stringImage.trim().isEmpty()) {
+            byte[] bytes = Base64.getMimeDecoder().decode(stringImage.getBytes());
+            ImageIcon pictureImage = new ImageIcon(bytes);
+            Chat.drawImageOnTextPane(pictureImage);
+        }
     }
 
+    /**
+     * This method populates onlineUserTable in Chat class.
+     * The first column is populated with String values.
+     * The second column is populated with ImageIcons representing users online status.
+     */
     private static void populateOnlineUserTable() {
         Object[] objects = new Object[2];
         int counter = 0;
@@ -141,6 +161,11 @@ public class Receiver implements Runnable {
         }
     }
 
+    /**
+     * This method closes BufferedReader.
+     * Note that server socket is not closed in ClientChat program
+     * as it is handled by server itself when we send it EX:0 message.
+     */
     private static void closeReceiverResources() {
         try {
             in.close();
