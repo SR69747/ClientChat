@@ -33,7 +33,7 @@ public class Receiver implements Runnable {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             //This block checks server's response to our login.
-            //If our login is valid, then draw gui
+            //If our login is valid, then draw Chat GUI
             if ((messageFromServer = in.readLine()) != null) {
                 switch (messageFromServer) {
                     case DECLINE_CONNECTION:
@@ -49,7 +49,6 @@ public class Receiver implements Runnable {
 
             //Communication block, receives messages
             while ((messageFromServer = in.readLine()) != null && !messageFromServer.equals(DECLINE_CONNECTION)) {
-
                 //If incoming message is not special, then display it
                 if (checkServerSpecialMessages()) {
                     System.out.println(messageFromServer);
@@ -70,57 +69,61 @@ public class Receiver implements Runnable {
     }
 
     private static boolean checkServerSpecialMessages() throws IOException {
-        boolean messageForConsole = true;
-        //Special message behaviour
-        switch (messageFromServer) {
+        boolean showMessageInGui = true;
 
+        switch (messageFromServer) {
             case ACCEPT_CONNECTION:
                 System.out.println("Connection Accepted\n");
-                messageForConsole = false;
+                showMessageInGui = false;
                 break;
-
             case DECLINE_CONNECTION:
                 System.out.println("Connection Declined");
-                messageForConsole = false;
+                showMessageInGui = false;
                 break;
-
             case UPDATE_USERS:
                 Sender.sendMessageToServer("/online");
-                messageForConsole = false;
+                showMessageInGui = false;
                 break;
-
             case START_OF_STREAM:
-                Object[] objects = new Object[2];
-                int counter = 0;
-
-                while (!(messageFromServer = in.readLine()).equals(END_OF_STREAM)) {
-                    String username = messageFromServer.split(",")[0];
-                    String onlineStatus = messageFromServer.split(",")[1];
-                    objects[0] = username;
-
-                    switch (onlineStatus) {
-                        case "true":
-                            objects[1] = Chat.getOnlineIcon();
-                            break;
-                        case "false":
-                            objects[1] = Chat.getOfflineIcon();
-                            break;
-                    }
-                    if (Chat.getTableModelRowCount() == counter) {
-                        Chat.addRowToTableModel(objects);
-                    }
-                    if (Chat.getTableModelRowCount() != 0 && Chat.getTableModelValue(counter).equals(username)) {
-                        Chat.setTableStatusIcon(objects[1], counter);
-                    }
-                    ++counter;
-                }
-
-                Chat.repaintOnlineUserTableRows();
-                messageForConsole = false;
+                populateOnlineUserTable();
+                showMessageInGui = false;
                 break;
         }
+        return showMessageInGui;
+    }
 
-        return messageForConsole;
+    private static void populateOnlineUserTable() {
+        Object[] objects = new Object[2];
+        int counter = 0;
+        try {
+            while (!(messageFromServer = in.readLine()).equals(END_OF_STREAM)) {
+                String username = messageFromServer.split(",")[0];
+                String onlineStatus = messageFromServer.split(",")[1];
+                objects[0] = username;
+
+                switch (onlineStatus) {
+                    case "true":
+                        objects[1] = Chat.getOnlineIcon();
+                        break;
+                    case "false":
+                        objects[1] = Chat.getOfflineIcon();
+                        break;
+                }
+                if (Chat.getTableModelRowCount() == counter) {
+                    Chat.addRowToTableModel(objects);
+                }
+                if (Chat.getTableModelRowCount() != 0 && Chat.getTableModelValue(counter).equals(username)) {
+                    Chat.setTableStatusIcon(objects[1], counter);
+                }
+                ++counter;
+            }
+            //Need to work on this. When a new client registers, table updates in a wrong way.
+            //Table should be populated again
+            Chat.repaintOnlineUserTableRows();
+
+        } catch (IOException err) {
+            System.out.println("Error: Failed to populate online users table\n" + err.getMessage());
+        }
     }
 
     private static void closeReceiverResources() {
