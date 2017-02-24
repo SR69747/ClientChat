@@ -88,6 +88,12 @@ public class Login {
 
     }
 
+    public static void enableLoginFrame(){
+        loginFrame.setVisible(true);
+        usernameField.setText("");
+        passwordField.setText("");
+    }
+
     public static void invalidLoginMessage() {
         loginMessage.setText("\nInvalid login, try again");
         usernameField.setText("");
