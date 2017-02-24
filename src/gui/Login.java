@@ -1,53 +1,62 @@
 package gui;
 
 import networking.Sender;
-
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.Socket;
 
 public class Login {
 
+    // Main frame initialisation
     private static JFrame loginFrame = new JFrame("Log in");
-    private static JTextField usernameField = new JTextField();
-    private static JPasswordField passwordField = new JPasswordField();
+    private static JPanel loginPanel = new JPanel();
+
+    // Component initialisation
+    private static JTextField usernameField = new JTextField(15);
+    private static JPasswordField passwordField = new JPasswordField(15);
     private static JLabel usernameLabel = new JLabel("Username: ");
     private static JLabel passwordLabel = new JLabel("Password: ");
     private static JButton enterButton = new JButton("Enter");
     private static JTextArea loginMessage = new JTextArea();
+    private static Font messageFont = new Font("Calibri", Font.PLAIN, 18);
+
+    // Panel initialisation
+    private static JPanel messagePanel = new JPanel();
+    private static JPanel usernamePanel = new JPanel();
+    private static JPanel passwordPanel = new JPanel();
+    private static JPanel buttonPanel = new JPanel();
 
     public static void launchLoginGui() {
 
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            System.out.println("Error: Failed to set look and feel\n" + e.getMessage());
-        }
-
-        //Sam, refactor this
         loginFrame.setBounds(300, 300, 300, 300);
-        loginFrame.setResizable(false);
-        loginFrame.setLayout(null);
+        loginFrame.setLayout(new BorderLayout());
         loginFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         loginFrame.setVisible(true);
         loginFrame.setAlwaysOnTop(true);
+        loginFrame.add(loginPanel, BorderLayout.CENTER);
 
-        usernameField.setBounds(130, 100, 100, 20);
-        passwordField.setBounds(130, 150, 100, 20);
-        usernameLabel.setBounds(60, 100, 100, 20);
-        passwordLabel.setBounds(60, 150, 100, 20);
-        enterButton.setBounds(115, 220, 80, 20);
-        loginMessage.setBounds(90, 50, 200, 30);
         loginMessage.setBackground(null);
         loginMessage.setEditable(false);
+        loginMessage.setFont(messageFont);
 
-        loginFrame.add(usernameField);
-        loginFrame.add(passwordField);
-        loginFrame.add(usernameLabel);
-        loginFrame.add(passwordLabel);
-        loginFrame.add(enterButton);
-        loginFrame.add(loginMessage);
+        // Components are split into panels here
+        messagePanel.add(loginMessage);
+        usernamePanel.add(usernameLabel);
+        usernamePanel.add(usernameField);
+        passwordPanel.add(passwordLabel);
+        passwordPanel.add(passwordField);
+        buttonPanel.add(enterButton);
+
+        // Panels are then added to main frame here
+        loginPanel.setLayout(new BoxLayout(loginPanel, BoxLayout.Y_AXIS));
+        loginPanel.add(messagePanel);
+        loginPanel.add(usernamePanel);
+        loginPanel.add(passwordPanel);
+        loginPanel.add(buttonPanel);
+
+
 
         enterButton.addActionListener(new AbstractAction() {
             @Override
@@ -80,7 +89,7 @@ public class Login {
     }
 
     public static void invalidLoginMessage() {
-        loginMessage.setText("Invalid Login, try again");
+        loginMessage.setText("\nInvalid login, try again");
         usernameField.setText("");
         passwordField.setText("");
     }
