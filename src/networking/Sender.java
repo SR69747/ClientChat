@@ -72,7 +72,7 @@ public final class Sender implements Runnable {
      */
     public static void sendMessageToServer() {
         String messageToServer;
-        if ((messageToServer = Chat.getMessageSendTextField().getText()) != null && !messageToServer.trim().isEmpty() && !messageToServer.contains(Receiver.IMAGE_STRING)) {
+        if ((messageToServer = Chat.getMessageSendTextField().getText()) != null && !messageToServer.trim().isEmpty() && !messageToServer.contains(Protocol.IMAGE_STRING)) {
             try {
                 if (!selectedUserName.isEmpty()) {
                     out.write(String.format("/to ~%s~%s\n", selectedUserName.trim(), messageToServer));
