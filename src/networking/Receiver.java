@@ -21,7 +21,7 @@ public final class Receiver implements Runnable {
     private static final String START_OF_CONNECTED_USERS_STREAM = "ST:R";
     private static final String END_OF_STREAM = "EN:0";
     private static final String UPDATE_USERS = "UP:A";
-    private static final String IMAGE_STRING = "IM:G#";
+    static final String IMAGE_STRING = "IM:G#";
 
     private Socket socket;
     private static BufferedReader in;
