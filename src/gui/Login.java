@@ -1,11 +1,9 @@
 package gui;
 
-import networking.Sender;
+import listeners.LoginButtonActionListener;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.io.IOException;
-import java.net.Socket;
 
 public class Login {
 
@@ -18,7 +16,7 @@ public class Login {
     private static JPasswordField passwordField = new JPasswordField(15);
     private static JLabel usernameLabel = new JLabel("Username: ");
     private static JLabel passwordLabel = new JLabel("Password: ");
-    private static JButton enterButton = new JButton("Enter");
+    private static JButton loginButton = new JButton("Enter");
     private static JTextArea loginMessage = new JTextArea();
     private static Font messageFont = new Font("Calibri", Font.PLAIN, 18);
 
@@ -47,7 +45,7 @@ public class Login {
         usernamePanel.add(usernameField);
         passwordPanel.add(passwordLabel);
         passwordPanel.add(passwordField);
-        buttonPanel.add(enterButton);
+        buttonPanel.add(loginButton);
 
         // Panels are then added to main frame here
         loginPanel.setLayout(new BoxLayout(loginPanel, BoxLayout.Y_AXIS));
@@ -56,39 +54,18 @@ public class Login {
         loginPanel.add(passwordPanel);
         loginPanel.add(buttonPanel);
 
-
-
-        enterButton.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                String passString = new String(passwordField.getPassword());
-                String loginDetails = String.format("%s,%s", usernameField.getText(), passString);
-
-                final int port = 8000;
-                final String host = "10.201.194.154";
-                try {
-                    Socket socket = new Socket(host, port);
-                    System.out.println("Connected to: " + host);
-
-                    //Starting a new ClientReceiver Thread
-                    new Thread(new Sender(socket, loginDetails)).start();
-
-                } catch (IOException e2) {
-                    System.out.println("Error launching a client: " + e2.getMessage());
-                }
-            }
-        });
+        loginButton.addActionListener(new LoginButtonActionListener(usernameField, passwordField));
     }
 
     //Work on this !
     public static void disableLoginFrame() {
+        //TODO Need to actually close loginFrame, not set it to invisible, as it continues to run at the background when our application is closed .
         loginFrame.setVisible(false);
 //       loginFrame.dispatchEvent(new WindowEvent(loginFrame, WindowEvent.WINDOW_CLOSING));
 
     }
 
-    public static void enableLoginFrame(){
+    public static void enableLoginFrame() {
         loginFrame.setVisible(true);
         usernameField.setText("");
         passwordField.setText("");

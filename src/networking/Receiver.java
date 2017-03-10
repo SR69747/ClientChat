@@ -12,18 +12,6 @@ import java.util.Base64;
 
 public final class Receiver implements Runnable {
 
-    /**
-     * Special strings, which server can send us.
-     * They are not shown in a console.
-     */
-    private static final String ACCEPT_CONNECTION = "AC:+";
-    private static final String DECLINE_CONNECTION = "EX:0";
-    private static final String START_OF_CONNECTED_USERS_STREAM = "ST:R";
-    private static final String START_OF_MISSED_MESSAGES_STREAM = "SY:P";
-    private static final String END_OF_STREAM = "EN:0";
-    private static final String UPDATE_USERS = "UP:A";
-    static final String IMAGE_STRING = "IM:G#";
-
     private Socket socket;
     private static BufferedReader in;
     private static String messageFromServer;
@@ -47,17 +35,17 @@ public final class Receiver implements Runnable {
 
             if ((messageFromServer = in.readLine()) != null) {
                 switch (messageFromServer) {
-                    case DECLINE_CONNECTION:
+                    case Protocol.DECLINE_CONNECTION:
                         Login.invalidLoginMessage();
                         break;
-                    case ACCEPT_CONNECTION:
+                    case Protocol.ACCEPT_CONNECTION:
                         Login.disableLoginFrame();
                         new Thread(new Chat()).start();
                         break;
                 }
             }
 
-            while ((messageFromServer = in.readLine()) != null && !messageFromServer.equals(DECLINE_CONNECTION)) {
+            while ((messageFromServer = in.readLine()) != null && !messageFromServer.equals(Protocol.DECLINE_CONNECTION)) {
                 if (checkServerSpecialMessages()) {
                     System.out.println(messageFromServer);
                     Chat.getMessageDisplayPane().setText(Chat.getMessageDisplayPane().getText() + '\n' + Sender.getCurrentTimeStamp() + messageFromServer);
@@ -83,29 +71,29 @@ public final class Receiver implements Runnable {
     private static boolean checkServerSpecialMessages() throws IOException {
         boolean showMessageInGui = true;
 
-        if (messageFromServer.contains(IMAGE_STRING)) {
+        if (messageFromServer.contains(Protocol.IMAGE_STRING)) {
             convertStringToImage();
             showMessageInGui = false;
         }
 
         switch (messageFromServer) {
-            case ACCEPT_CONNECTION:
+            case Protocol.ACCEPT_CONNECTION:
                 System.out.println("Connection Accepted\n");
                 showMessageInGui = false;
                 break;
-            case DECLINE_CONNECTION:
+            case Protocol.DECLINE_CONNECTION:
                 System.out.println("Connection Declined");
                 showMessageInGui = false;
                 break;
-            case UPDATE_USERS:
+            case Protocol.UPDATE_USERS:
                 Sender.sendMessageToServer("/online");
                 showMessageInGui = false;
                 break;
-            case START_OF_CONNECTED_USERS_STREAM:
+            case Protocol.START_OF_CONNECTED_USERS_STREAM:
                 populateOnlineUserTable();
                 showMessageInGui = false;
                 break;
-            case START_OF_MISSED_MESSAGES_STREAM:
+            case Protocol.START_OF_MISSED_MESSAGES_STREAM:
                 //TODO Create a method to display all missed messages to console.
                 break;
         }
@@ -134,7 +122,7 @@ public final class Receiver implements Runnable {
         Object[] objects = new Object[2];
         int counter = 0;
         try {
-            while (!(messageFromServer = in.readLine()).equals(END_OF_STREAM)) {
+            while (!(messageFromServer = in.readLine()).equals(Protocol.END_OF_STREAM)) {
                 String username = messageFromServer.split(",")[0];
                 String onlineStatus = messageFromServer.split(",")[1];
                 objects[0] = username;
