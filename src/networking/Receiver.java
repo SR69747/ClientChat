@@ -19,6 +19,7 @@ public final class Receiver implements Runnable {
     private static final String ACCEPT_CONNECTION = "AC:+";
     private static final String DECLINE_CONNECTION = "EX:0";
     private static final String START_OF_CONNECTED_USERS_STREAM = "ST:R";
+    private static final String START_OF_MISSED_MESSAGES_STREAM = "SY:P";
     private static final String END_OF_STREAM = "EN:0";
     private static final String UPDATE_USERS = "UP:A";
     static final String IMAGE_STRING = "IM:G#";
@@ -104,6 +105,9 @@ public final class Receiver implements Runnable {
                 populateOnlineUserTable();
                 showMessageInGui = false;
                 break;
+            case START_OF_MISSED_MESSAGES_STREAM:
+                //TODO Create a method to display all missed messages to console.
+                break;
         }
         return showMessageInGui;
     }
@@ -151,8 +155,7 @@ public final class Receiver implements Runnable {
                 }
                 ++counter;
             }
-            //Need to work on this. When a new client registers, table updates in a wrong way.
-            //Table should be populated again
+            //TODO When a new client registers, table updates in a wrong way. Table should be populated again
             Chat.repaintOnlineUserTableRows();
 
         } catch (IOException err) {
