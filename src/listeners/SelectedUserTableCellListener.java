@@ -6,7 +6,7 @@ import networking.Sender;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-public class SelectedUserTableCellListener implements ListSelectionListener {
+public final class SelectedUserTableCellListener implements ListSelectionListener {
 
     @Override
     public void valueChanged(ListSelectionEvent e) {

@@ -93,7 +93,7 @@ public class Chat extends JPanel implements Runnable {
     }
 
     public static void drawImageOnTextPane(ImageIcon icon) {
-        //This method should be implemented
+        //TODO implement this method to display our icon on TextPane.
     }
 
     //Improve this !

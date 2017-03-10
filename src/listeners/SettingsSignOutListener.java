@@ -9,7 +9,7 @@ import java.awt.event.ActionEvent;
 /**
  * Created by SR69747 on 24/02/2017.
  */
-public class SettingsSignOutListener extends AbstractAction {
+public final class SettingsSignOutListener extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         Sender.sendMessageToServer("/exit");

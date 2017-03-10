@@ -3,7 +3,7 @@ package gui;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 
-public class UserTableIconRenderer extends DefaultTableCellRenderer {
+public final class UserTableIconRenderer extends DefaultTableCellRenderer {
 
     UserTableIconRenderer() {
         super();

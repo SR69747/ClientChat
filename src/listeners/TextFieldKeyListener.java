@@ -5,7 +5,7 @@ import networking.Sender;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class TextFieldKeyListener implements KeyListener {
+public final class TextFieldKeyListener implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
