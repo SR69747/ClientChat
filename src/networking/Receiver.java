@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.Base64;
 
-public class Receiver implements Runnable {
+public final class Receiver implements Runnable {
 
     /**
      * Special strings, which server can send us.

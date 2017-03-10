@@ -9,7 +9,7 @@ import java.net.Socket;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-public class Sender implements Runnable {
+public final class Sender implements Runnable {
 
     private static BufferedWriter out;
     private static Socket socket;
@@ -25,7 +25,7 @@ public class Sender implements Runnable {
      * This block sends messages to server.
      * In order to send a message, sendMessageToServer method should be called.
      * When Sender thread is launched, it launches Receiver thread for receiving servers response and
-     * sends loginDetails string to the server for checks.
+     * sending loginDetails string to the server for checks.
      * Note that when Sender thread ends, BufferedWriter is not closed, as it is used in sendMessageToServer
      * methods.
      * BufferedWriter is closed when receiver thread is completed or when it received DECLINE_CONNECTION message from the server.
