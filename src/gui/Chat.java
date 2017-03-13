@@ -8,8 +8,14 @@ import networking.Sender;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class Chat extends JPanel implements Runnable {
 
@@ -22,7 +28,7 @@ public class Chat extends JPanel implements Runnable {
     private static JPanel sendPanel = new JPanel();
     private static JTextPane messageDisplayPane = new JTextPane();
     private static JTextField messageSendTextField = new JTextField();
-    private String[] UserColumnNames = {"Username", "Status"};
+    private static String[] UserColumnNames = {"Username", "Status"};
     private static JTable onlineUserTable = new JTable();
     private static JScrollPane userScrollPane = new JScrollPane(onlineUserTable);
     private static DefaultTableModel defaultTableModel = new DefaultTableModel();
@@ -32,6 +38,8 @@ public class Chat extends JPanel implements Runnable {
     private static JMenuItem changePassword = new JMenuItem("Change password");
     private static JMenuItem changeTheme = new JMenuItem("Change theme");
 
+    private static HTMLDocument doc;
+    private static HTMLEditorKit editorKit;
 
     private static ImageIcon onlineIcon = new ImageIcon("C:\\lgim\\code\\java\\onlineIcon2.jpg");
     private static ImageIcon offlineIcon = new ImageIcon("C:\\lgim\\code\\java\\offlineIcon2.jpg");
@@ -53,7 +61,12 @@ public class Chat extends JPanel implements Runnable {
             // set message display properties
             messageDisplayPane.setEditable(false);
             messageDisplayPane.setAutoscrolls(true);
-            messageDisplayPane.setText("\n    Welcome to chat\n    _____________\n");
+            //FIXME Trying to use html on textPane.
+            messageDisplayPane.setContentType("text/html");
+
+            doc = (HTMLDocument) messageDisplayPane.getDocument();
+            editorKit = (HTMLEditorKit) messageDisplayPane.getEditorKit();
+            displayMessageInHTML("Welcome to chatting GUI");
 
             messageSendTextField.addKeyListener(new TextFieldKeyListener());
 
@@ -70,6 +83,7 @@ public class Chat extends JPanel implements Runnable {
             menuBar.add(settingsMenu);
 
             // set user table properties
+            //TODO Set onlineUserTable cells unmodifiable.
             userScrollPane.setPreferredSize(new Dimension(135, 500));
             onlineUserTable.setModel(defaultTableModel);
             onlineUserTable.setAutoCreateRowSorter(true);
@@ -93,7 +107,7 @@ public class Chat extends JPanel implements Runnable {
     }
 
     public static void drawImageOnTextPane(ImageIcon icon) {
-        //TODO implement this method to display our icon on TextPane.
+        //TODO Implement this method.
     }
 
     //Improve this !
@@ -110,6 +124,45 @@ public class Chat extends JPanel implements Runnable {
         return data;
     }
 
+
+    /**
+     * This method displays @param text in our messageDisplayPane.
+     *
+     * @param text - String message
+     */
+    public static void displayMessageInHTML(String text) {
+        try {
+            editorKit.insertHTML(doc, doc.getLength(), "<b style=\"color:blue\">" + getCurrentTimeStamp() + text + "</span>", 0, 0, null);
+        } catch (BadLocationException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * This method returns a current time stamp.
+     *
+     * @return String in this format [hh:mm:ss].
+     */
+    static String getCurrentTimeStamp() {
+        return '[' + LocalTime.now().format(DateTimeFormatter.ofPattern("hh:mm:ss")) + "] ";
+    }
+
+    /**
+     * This method sets messageSendTextField text to "".
+     */
+    public static void emptyUserInputTextField() {
+        messageSendTextField.setText("");
+    }
+
+    /**
+     * This method is used in Sender class.
+     *
+     * @return messageSendTextField text
+     */
+    public static String getUserInputText() {
+        return messageSendTextField.getText();
+    }
+
     public static int getTableModelRowCount() {
         return defaultTableModel.getRowCount();
     }
@@ -124,14 +177,6 @@ public class Chat extends JPanel implements Runnable {
 
     public static void repaintOnlineUserTableRows() {
         onlineUserTable.repaint();
-    }
-
-    public static JTextPane getMessageDisplayPane() {
-        return messageDisplayPane;
-    }
-
-    public static JTextField getMessageSendTextField() {
-        return messageSendTextField;
     }
 
     public static ImageIcon getOnlineIcon() {

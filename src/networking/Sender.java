@@ -6,8 +6,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 public final class Sender implements Runnable {
 
@@ -72,7 +70,7 @@ public final class Sender implements Runnable {
      */
     public static void sendMessageToServer() {
         String messageToServer;
-        if ((messageToServer = Chat.getMessageSendTextField().getText()) != null && !messageToServer.trim().isEmpty() && !messageToServer.contains(Protocol.IMAGE_STRING)) {
+        if ((messageToServer = Chat.getUserInputText()) != null && !messageToServer.trim().isEmpty() && !messageToServer.contains(Protocol.IMAGE_STRING)) {
             try {
                 if (!selectedUserName.isEmpty()) {
                     out.write(String.format("/to ~%s~%s\n", selectedUserName.trim(), messageToServer));
@@ -81,8 +79,8 @@ public final class Sender implements Runnable {
                     out.write(messageToServer + '\n');
                     out.flush();
                 }
-                Chat.getMessageSendTextField().setText("");
-                Chat.getMessageDisplayPane().setText(Chat.getMessageDisplayPane().getText() + '\n' + getCurrentTimeStamp() + "You : " + messageToServer);
+                Chat.emptyUserInputTextField();
+                Chat.displayMessageInHTML("You : " + messageToServer);
             } catch (IOException err) {
                 System.out.println("Error: " + err.getMessage());
                 closeSenderResources();
@@ -99,15 +97,6 @@ public final class Sender implements Runnable {
      */
     public static void setSelectedUserName(String selectedUserName) {
         Sender.selectedUserName = selectedUserName;
-    }
-
-    /**
-     * This method returns a current time stamp.
-     *
-     * @return String in this format [hh:mm:ss].
-     */
-    static String getCurrentTimeStamp() {
-        return '[' + LocalTime.now().format(DateTimeFormatter.ofPattern("hh:mm:ss")) + "] ";
     }
 
     /**

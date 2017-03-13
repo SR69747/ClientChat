@@ -48,7 +48,7 @@ public final class Receiver implements Runnable {
             while ((messageFromServer = in.readLine()) != null && !messageFromServer.equals(Protocol.DECLINE_CONNECTION)) {
                 if (checkServerSpecialMessages()) {
                     System.out.println(messageFromServer);
-                    Chat.getMessageDisplayPane().setText(Chat.getMessageDisplayPane().getText() + '\n' + Sender.getCurrentTimeStamp() + messageFromServer);
+                    Chat.displayMessageInHTML(messageFromServer);
                 }
             }
 
