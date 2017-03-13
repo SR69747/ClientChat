@@ -93,9 +93,6 @@ public final class Receiver implements Runnable {
                 populateOnlineUserTable();
                 showMessageInGui = false;
                 break;
-            case Protocol.START_OF_MISSED_MESSAGES_STREAM:
-                //TODO Create a method to display all missed messages to console.
-                break;
         }
         return showMessageInGui;
     }
