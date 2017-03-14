@@ -70,7 +70,8 @@ public final class Sender implements Runnable {
      */
     public static void sendMessageToServer() {
         String messageToServer;
-        if ((messageToServer = Chat.getUserInputText()) != null && !messageToServer.trim().isEmpty() && !messageToServer.contains(Protocol.IMAGE_STRING)) {
+        //TODO && !messageToServer.contains(Protocol.IMAGE_STRING)
+        if ((messageToServer = Chat.getUserInputText()) != null && !messageToServer.trim().isEmpty()) {
             try {
                 if (!selectedUserName.isEmpty()) {
                     out.write(String.format("/to ~%s~%s\n", selectedUserName.trim(), messageToServer));
@@ -80,7 +81,7 @@ public final class Sender implements Runnable {
                     out.flush();
                 }
                 Chat.emptyUserInputTextField();
-                Chat.displayMessageInHTML("You : " + messageToServer);
+                Chat.displayMessageInHTML("You : " + messageToServer, "gray", true);
             } catch (IOException err) {
                 System.out.println("Error: " + err.getMessage());
                 closeSenderResources();

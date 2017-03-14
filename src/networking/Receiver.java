@@ -48,7 +48,7 @@ public final class Receiver implements Runnable {
             while ((messageFromServer = in.readLine()) != null && !messageFromServer.equals(Protocol.DECLINE_CONNECTION)) {
                 if (checkServerSpecialMessages()) {
                     System.out.println(messageFromServer);
-                    Chat.displayMessageInHTML(messageFromServer);
+                    Chat.displayMessageInHTML(messageFromServer, "black", true);
                 }
             }
 
@@ -104,9 +104,9 @@ public final class Receiver implements Runnable {
     private static void convertStringToImage() {
         String stringImage = messageFromServer.split("#")[1];
         if (!stringImage.trim().isEmpty()) {
-            byte[] bytes = Base64.getMimeDecoder().decode(stringImage.getBytes());
-            ImageIcon pictureImage = new ImageIcon(bytes);
-            Chat.drawImageOnTextPane(pictureImage);
+            //  byte[] bytes = Base64.getMimeDecoder().decode(stringImage.getBytes());
+            // ImageIcon pictureImage = new ImageIcon(bytes);
+            Chat.displayPictureInHTML(stringImage);
         }
     }
 

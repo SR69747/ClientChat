@@ -61,12 +61,13 @@ public class Chat extends JPanel implements Runnable {
             // set message display properties
             messageDisplayPane.setEditable(false);
             messageDisplayPane.setAutoscrolls(true);
+
             //FIXME Trying to use html on textPane.
             messageDisplayPane.setContentType("text/html");
 
             doc = (HTMLDocument) messageDisplayPane.getDocument();
             editorKit = (HTMLEditorKit) messageDisplayPane.getEditorKit();
-            displayMessageInHTML("Welcome to chatting GUI");
+            displayMessageInHTML("Welcome to chatting GUI", "blue", false);
 
             messageSendTextField.addKeyListener(new TextFieldKeyListener());
 
@@ -106,16 +107,12 @@ public class Chat extends JPanel implements Runnable {
         });
     }
 
-    public static void drawImageOnTextPane(ImageIcon icon) {
-        //TODO Implement this method.
-    }
-
-    //Improve this !
+    //TODO Improve this !
     public static void closeChattingGui() {
         mainFrame.setVisible(false);
     }
 
-    //Methods which are used in Receiver class
+
     public static String getTableModelValue(int row) {
         String data = "No Data";
         if (defaultTableModel.getRowCount() != 0) {
@@ -130,9 +127,9 @@ public class Chat extends JPanel implements Runnable {
      *
      * @param text - String message
      */
-    public static void displayMessageInHTML(String text) {
+    public static void displayMessageInHTML(String text, String color, boolean showTimeStamp) {
         try {
-            editorKit.insertHTML(doc, doc.getLength(), "<b style=\"color:blue\">" + getCurrentTimeStamp() + text + "</span>", 0, 0, null);
+            editorKit.insertHTML(doc, doc.getLength(), "<b style=\"color:" + color + "\">" + ((showTimeStamp) ? getCurrentTimeStamp() : "") + text + "</span>", 0, 0, null);
         } catch (BadLocationException | IOException e) {
             e.printStackTrace();
         }
@@ -141,14 +138,13 @@ public class Chat extends JPanel implements Runnable {
     /**
      * This method displays @param icon in our messageDisplayPane.
      *
-     * @param icon - our Image Icon
+     * @param base64 - our Image in base64 String
      */
-    public static void displayPictureInHTML(ImageIcon icon) {
+    public static void displayPictureInHTML(String base64) {
         try {
-            String iconfilename = icon.toString();
-            String fileName = iconfilename.substring(iconfilename.lastIndexOf("/") + 1);
-            System.out.println(fileName);
-            editorKit.insertHTML(doc, doc.getLength(), " <img src=" + fileName + " alt=Good Morning Friends/>", 0, 0, null);
+            System.out.println(base64);
+            editorKit.insertHTML(doc, doc.getLength(), "<img src=\"data:image/png;base64," + base64 + "\" alt=\"\" width=\"80\" height=\"80\" />", 0, 0, null);
+            // doc.insertAfterEnd(doc.getRootElements()[0].getElement(0), "<img src=\"data:image/png;base64," + base64 + "\" alt=\"\" width=\"80\" height=\"80\" />");
         } catch (BadLocationException | IOException e) {
             e.printStackTrace();
         }
