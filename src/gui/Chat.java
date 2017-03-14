@@ -139,11 +139,27 @@ public class Chat extends JPanel implements Runnable {
     }
 
     /**
+     * This method displays @param icon in our messageDisplayPane.
+     *
+     * @param icon - our Image Icon
+     */
+    public static void displayPictureInHTML(ImageIcon icon) {
+        try {
+            String iconfilename = icon.toString();
+            String fileName = iconfilename.substring(iconfilename.lastIndexOf("/") + 1);
+            System.out.println(fileName);
+            editorKit.insertHTML(doc, doc.getLength(), " <img src=" + fileName + " alt=Good Morning Friends/>", 0, 0, null);
+        } catch (BadLocationException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * This method returns a current time stamp.
      *
      * @return String in this format [hh:mm:ss].
      */
-    static String getCurrentTimeStamp() {
+    private static String getCurrentTimeStamp() {
         return '[' + LocalTime.now().format(DateTimeFormatter.ofPattern("hh:mm:ss")) + "] ";
     }
 
