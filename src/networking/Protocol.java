@@ -15,4 +15,5 @@ public final class Protocol {
     static final String END_OF_STREAM = "EN:0";
     static final String UPDATE_USERS = "UP:A";
     static final String IMAGE_STRING = "IM:G#";
+    static final String GET_MISSED_MESSAGES = "MS:0";
 }

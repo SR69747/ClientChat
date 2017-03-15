@@ -64,7 +64,6 @@ public class Chat extends JPanel implements Runnable {
 
             //FIXME Trying to use html on textPane.
             messageDisplayPane.setContentType("text/html");
-
             doc = (HTMLDocument) messageDisplayPane.getDocument();
             editorKit = (HTMLEditorKit) messageDisplayPane.getEditorKit();
             displayMessageInHTML("Welcome to chatting GUI", "blue", false);
@@ -101,18 +100,19 @@ public class Chat extends JPanel implements Runnable {
             mainFrame.add(sendPanel, BorderLayout.SOUTH);
             mainFrame.add(new JScrollPane(messageDisplayPane), BorderLayout.CENTER);
             mainFrame.add(userScrollPane, BorderLayout.EAST);
-
-            //Getting list of users online
-            Sender.sendMessageToServer("/online");
         });
+
+        //Getting list of users online
+        Sender.sendMessageToServer("/online");
     }
 
-    //TODO Improve this !
+
     public static void closeChattingGui() {
+        //TODO Improve this !
         mainFrame.setVisible(false);
     }
 
-
+    //Methods which are used in Receiver class
     public static String getTableModelValue(int row) {
         String data = "No Data";
         if (defaultTableModel.getRowCount() != 0) {
@@ -138,16 +138,15 @@ public class Chat extends JPanel implements Runnable {
     /**
      * This method displays @param icon in our messageDisplayPane.
      *
-     * @param base64 - our Image in base64 String
+     * @param icon - our Image Icon
      */
-    public static void displayPictureInHTML(String base64) {
-        try {
-            System.out.println(base64);
-            editorKit.insertHTML(doc, doc.getLength(), "<img src=\"data:image/png;base64," + base64 + "\" alt=\"\" width=\"80\" height=\"80\" />", 0, 0, null);
-            // doc.insertAfterEnd(doc.getRootElements()[0].getElement(0), "<img src=\"data:image/png;base64," + base64 + "\" alt=\"\" width=\"80\" height=\"80\" />");
-        } catch (BadLocationException | IOException e) {
-            e.printStackTrace();
-        }
+    public static void displayPictureInHTML(String icon) {
+        //FIXME This method is under work
+//        try {
+//           editorKit.insertHTML(doc, doc.getLength(), " <img src=" + fileName + " alt=Good Morning Friends/>", 0, 0, null);
+//        } catch (BadLocationException | IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     /**

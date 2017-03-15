@@ -3,12 +3,10 @@ package networking;
 import gui.Chat;
 import gui.Login;
 
-import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.util.Base64;
 
 public final class Receiver implements Runnable {
 
