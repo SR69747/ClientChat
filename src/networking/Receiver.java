@@ -39,6 +39,8 @@ public final class Receiver implements Runnable {
                     case Protocol.ACCEPT_CONNECTION:
                         Login.disableLoginFrame();
                         new Thread(new Chat()).start();
+                        //  getMissedMessages();
+                        // getUsersOnline();
                         break;
                 }
             }
@@ -85,9 +87,6 @@ public final class Receiver implements Runnable {
                 break;
             case Protocol.UPDATE_USERS:
                 Sender.sendMessageToServer("/online");
-                showMessageInGui = false;
-                break;
-            case Protocol.START_OF_CONNECTED_USERS_STREAM:
                 populateOnlineUserTable();
                 showMessageInGui = false;
                 break;
@@ -100,13 +99,35 @@ public final class Receiver implements Runnable {
      * Note that this method is triggered when messageFromServer contains IMAGE_STRING.
      */
     private static void convertStringToImage() {
+        //FIXME This method is under work.
         String stringImage = messageFromServer.split("#")[1];
         if (!stringImage.trim().isEmpty()) {
-            //  byte[] bytes = Base64.getMimeDecoder().decode(stringImage.getBytes());
+            //   byte[] bytes = Base64.getDecoder().decode(stringImage.getBytes());
             // ImageIcon pictureImage = new ImageIcon(bytes);
             Chat.displayPictureInHTML(stringImage);
         }
     }
+
+//    /**
+//     * This method reads and prints out all our missed messages from the server.
+//     *
+//     * @throws IOException possible exception.
+//     */
+//    private static void getMissedMessages() throws IOException {
+//        Sender.sendMessageToServer(Protocol.GET_MISSED_MESSAGES);
+//        while ((messageFromServer = in.readLine()).equals(Protocol.END_OF_STREAM) && !messageFromServer.equals(Protocol.DECLINE_CONNECTION)) {
+//            System.out.println(messageFromServer);
+//            Chat.displayMessageInHTML(messageFromServer, "blue", false);
+//        }
+//    }
+//
+//    /**
+//     * This method requests and receives all user online and populates onlineUserTable.
+//     */
+//    private static void getUsersOnline() {
+//       // Sender.sendMessageToServer(Protocol.GET_USERS_ONLINE);
+//        populateOnlineUserTable();
+//    }
 
     /**
      * This method populates onlineUserTable in Chat class.

@@ -1,9 +1,6 @@
 package gui;
 
-import listeners.SelectedUserTableCellListener;
-import listeners.SendButtonListener;
-import listeners.SettingsSignOutListener;
-import listeners.TextFieldKeyListener;
+import listeners.*;
 import networking.Sender;
 
 import javax.swing.*;
@@ -12,6 +9,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
+import java.awt.dnd.DropTarget;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.time.LocalTime;
@@ -69,6 +67,7 @@ public class Chat extends JPanel implements Runnable {
             displayMessageInHTML("Welcome to chatting GUI", "blue", false);
 
             messageSendTextField.addKeyListener(new TextFieldKeyListener());
+            messageSendTextField.setDropTarget(new DropTarget(messageSendTextField, 0, new DropListener(), true));
 
             sendButton.setPreferredSize(new Dimension(135, 25));
             sendButton.addActionListener(new SendButtonListener());
@@ -100,19 +99,16 @@ public class Chat extends JPanel implements Runnable {
             mainFrame.add(sendPanel, BorderLayout.SOUTH);
             mainFrame.add(new JScrollPane(messageDisplayPane), BorderLayout.CENTER);
             mainFrame.add(userScrollPane, BorderLayout.EAST);
-        });
 
-        //Getting list of users online
-        Sender.sendMessageToServer("/online");
+            Sender.sendMessageToServer("/online");
+        });
     }
 
-
     public static void closeChattingGui() {
-        //TODO Improve this !
+        //TODO Need to actually close chatting gui !
         mainFrame.setVisible(false);
     }
 
-    //Methods which are used in Receiver class
     public static String getTableModelValue(int row) {
         String data = "No Data";
         if (defaultTableModel.getRowCount() != 0) {
@@ -120,7 +116,6 @@ public class Chat extends JPanel implements Runnable {
         }
         return data;
     }
-
 
     /**
      * This method displays @param text in our messageDisplayPane.
@@ -138,15 +133,18 @@ public class Chat extends JPanel implements Runnable {
     /**
      * This method displays @param icon in our messageDisplayPane.
      *
-     * @param icon - our Image Icon
+     * @param base64 - our Image in base64 String
      */
-    public static void displayPictureInHTML(String icon) {
-        //FIXME This method is under work
-//        try {
-//           editorKit.insertHTML(doc, doc.getLength(), " <img src=" + fileName + " alt=Good Morning Friends/>", 0, 0, null);
-//        } catch (BadLocationException | IOException e) {
-//            e.printStackTrace();
-//        }
+    public static void displayPictureInHTML(String base64) {
+        //FIXME This method is under work.
+        try {
+            // String e = Base64.getEncoder().encodeToString(base64);
+            /*<img src="https://www.gravatar.com/avatar/89ec268d347a422368b2d8cbcc5e059b?s=32&amp;d=identicon&amp;r=PG" alt="" width="32" height="32">*/
+            System.out.println(base64);
+            editorKit.insertHTML(doc, doc.getLength(), "<img src=\"data:image/png;base64," + base64 + "\" />", 0, 0, null);
+        } catch (BadLocationException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
