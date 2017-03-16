@@ -1,9 +1,6 @@
 package listeners;
 
 import java.awt.dnd.*;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 public final class DropListener implements DropTargetListener, Serializable {
