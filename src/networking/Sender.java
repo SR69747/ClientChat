@@ -26,7 +26,7 @@ public final class Sender implements Runnable {
      * sending loginDetails string to the server for checks.
      * Note that when Sender thread ends, BufferedWriter is not closed, as it is used in sendMessageToServer
      * methods.
-     * BufferedWriter is closed when receiver thread is completed or when it received DECLINE_CONNECTION message from the server.
+     * BufferedWriter is closed when receiver thread is completed or when it received SERVER_DECLINE_CONNECTION message from the server.
      */
     public void run() {
         try {
@@ -74,7 +74,7 @@ public final class Sender implements Runnable {
         if ((messageToServer = Chat.getUserInputText()) != null && !messageToServer.trim().isEmpty()) {
             try {
                 if (!selectedUserName.isEmpty()) {
-                    out.write(String.format("/to ~%s~%s\n", selectedUserName.trim(), messageToServer));
+                    out.write(String.format("S:TO@¬%s¬%s\n", selectedUserName.trim(), messageToServer));
                     out.flush();
                 } else {
                     out.write(messageToServer + '\n');
@@ -103,7 +103,7 @@ public final class Sender implements Runnable {
     /**
      * This method closes BufferedWriter.
      * Note that server socket is not closed in ClientChat program
-     * as it is handled by server itself when we send it DECLINE_CONNECTION message.
+     * as it is handled by server itself when we send it SERVER_DECLINE_CONNECTION message.
      */
     static void closeSenderResources() {
         try {

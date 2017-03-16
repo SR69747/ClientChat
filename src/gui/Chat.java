@@ -1,7 +1,7 @@
 package gui;
 
 import listeners.*;
-import networking.Sender;
+import networking.Receiver;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -99,8 +99,7 @@ public class Chat extends JPanel implements Runnable {
             mainFrame.add(sendPanel, BorderLayout.SOUTH);
             mainFrame.add(new JScrollPane(messageDisplayPane), BorderLayout.CENTER);
             mainFrame.add(userScrollPane, BorderLayout.EAST);
-
-            Sender.sendMessageToServer("/online");
+            Receiver.getUsersOnline();
         });
     }
 

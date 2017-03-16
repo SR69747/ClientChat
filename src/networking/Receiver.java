@@ -33,10 +33,10 @@ public final class Receiver implements Runnable {
 
             if ((messageFromServer = in.readLine()) != null) {
                 switch (messageFromServer) {
-                    case Protocol.DECLINE_CONNECTION:
+                    case Protocol.SERVER_DECLINE_CONNECTION:
                         Login.invalidLoginMessage();
                         break;
-                    case Protocol.ACCEPT_CONNECTION:
+                    case Protocol.SERVER_ACCEPT_CONNECTION:
                         Login.disableLoginFrame();
                         new Thread(new Chat()).start();
                         //  getMissedMessages();
@@ -45,7 +45,7 @@ public final class Receiver implements Runnable {
                 }
             }
 
-            while ((messageFromServer = in.readLine()) != null && !messageFromServer.equals(Protocol.DECLINE_CONNECTION)) {
+            while ((messageFromServer = in.readLine()) != null && !messageFromServer.equals(Protocol.SERVER_DECLINE_CONNECTION)) {
                 if (checkServerSpecialMessages()) {
                     System.out.println(messageFromServer);
                     Chat.displayMessageInHTML(messageFromServer, "black", true);
@@ -77,17 +77,27 @@ public final class Receiver implements Runnable {
         }
 
         switch (messageFromServer) {
-            case Protocol.ACCEPT_CONNECTION:
+            case Protocol.SERVER_ACCEPT_CONNECTION:
                 System.out.println("Connection Accepted\n");
                 showMessageInGui = false;
                 break;
-            case Protocol.DECLINE_CONNECTION:
+            case Protocol.SERVER_DECLINE_CONNECTION:
                 System.out.println("Connection Declined");
                 showMessageInGui = false;
                 break;
-            case Protocol.UPDATE_USERS:
-                Sender.sendMessageToServer("/online");
+            case Protocol.SERVER_ACKNOWLEDGE_ONLINE:  //When our server notifies us about online update, we request users online.
+                Sender.sendMessageToServer(Protocol.GET_USERS_ONLINE);
+                showMessageInGui = false;
+                break;
+            case Protocol.SERVER_USERS_ONLINE_STREAM:
                 populateOnlineUserTable();
+                showMessageInGui = false;
+                break;
+            case Protocol.SERVER_ACKNOWLEDGE_MISSED_MESSAGES:
+                while (!(messageFromServer = in.readLine()).equals(Protocol.SERVER_END_OF_STREAM) && !messageFromServer.equals(Protocol.SERVER_DECLINE_CONNECTION)) {
+                    System.out.println(messageFromServer);
+                    Chat.displayMessageInHTML(messageFromServer, "blue", false);
+                }
                 showMessageInGui = false;
                 break;
         }
@@ -108,26 +118,12 @@ public final class Receiver implements Runnable {
         }
     }
 
-//    /**
-//     * This method reads and prints out all our missed messages from the server.
-//     *
-//     * @throws IOException possible exception.
-//     */
-//    private static void getMissedMessages() throws IOException {
-//        Sender.sendMessageToServer(Protocol.GET_MISSED_MESSAGES);
-//        while ((messageFromServer = in.readLine()).equals(Protocol.END_OF_STREAM) && !messageFromServer.equals(Protocol.DECLINE_CONNECTION)) {
-//            System.out.println(messageFromServer);
-//            Chat.displayMessageInHTML(messageFromServer, "blue", false);
-//        }
-//    }
-//
-//    /**
-//     * This method requests and receives all user online and populates onlineUserTable.
-//     */
-//    private static void getUsersOnline() {
-//       // Sender.sendMessageToServer(Protocol.GET_USERS_ONLINE);
-//        populateOnlineUserTable();
-//    }
+    /**
+     * This method requests and receives all user online and populates onlineUserTable.
+     */
+    public static void getUsersOnline() {
+        Sender.sendMessageToServer(Protocol.GET_USERS_ONLINE);
+    }
 
     /**
      * This method populates onlineUserTable in Chat class.
@@ -138,7 +134,7 @@ public final class Receiver implements Runnable {
         Object[] objects = new Object[2];
         int counter = 0;
         try {
-            while (!(messageFromServer = in.readLine()).equals(Protocol.END_OF_STREAM)) {
+            while (!(messageFromServer = in.readLine()).equals(Protocol.SERVER_END_OF_STREAM) && !messageFromServer.equals(Protocol.SERVER_DECLINE_CONNECTION)) {
                 String username = messageFromServer.split(",")[0];
                 String onlineStatus = messageFromServer.split(",")[1];
                 objects[0] = username;
@@ -170,7 +166,7 @@ public final class Receiver implements Runnable {
     /**
      * This method closes BufferedReader.
      * Note that server socket is not closed in ClientChat program
-     * as it is handled by server itself when we send it DECLINE_CONNECTION message.
+     * as it is handled by server itself when we send it SERVER_DECLINE_CONNECTION message.
      */
     private static void closeReceiverResources() {
         try {
