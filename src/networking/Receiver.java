@@ -76,13 +76,11 @@ public final class Receiver implements Runnable {
     private static boolean checkServerSpecialMessages() throws IOException {
         boolean showMessageInGui = true;
 
-        if (messageFromServer.contains(Protocol.IMAGE_STRING)) {
-            //TODO Put in SWITCH statement and improve..
-            convertStringToImage();
-            showMessageInGui = false;
-        }
-
         switch (messageFromServer) {
+            case Protocol.SERVER_IMAGE_STREAM:
+                convertStringToImage();
+                showMessageInGui = false;
+                break;
             case Protocol.SERVER_ACCEPT_CONNECTION:
                 System.out.println("Connection Accepted\n");
                 showMessageInGui = false;
@@ -99,10 +97,6 @@ public final class Receiver implements Runnable {
                 populateOnlineUserTable();
                 showMessageInGui = false;
                 break;
-//            case Protocol.SERVER_ACKNOWLEDGE_MISSED_MESSAGES: //When our server notifies us about missed messages, we request them.
-//                Sender.sendMessageToServer(Protocol.GET_MISSED_MESSAGES);
-//                showMessageInGui = false;
-//                break;
             case Protocol.SERVER_MISSED_MESSAGES_STREAM:
                 printOutMissedMessagesStream();
                 showMessageInGui = false;
@@ -115,26 +109,12 @@ public final class Receiver implements Runnable {
      * This method decodes Base64 encoded image.
      * Note that this method is triggered when messageFromServer contains IMAGE_STRING.
      */
-    private static void convertStringToImage() {
-        //FIXME This method is under work.
-        File file = new File("img.jpg");
-        String stringImage = messageFromServer.split("#")[1];
-        if (!stringImage.trim().isEmpty()) {
-            byte[] bytes = Base64.getDecoder().decode(stringImage.getBytes());
-            //Saving our image to file because HTMLDocument class in Java can not display Base64 images.
-            //This method needs some work
-            Image img = new ImageIcon(bytes).getImage();
-            BufferedImage bi = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_RGB);
-            Graphics2D g2 = bi.createGraphics();
-            g2.drawImage(img, 0, 0, null);
-            g2.dispose();
-            try {
-
-                ImageIO.write(bi, "png", file);
-            } catch (IOException e) {
-                e.printStackTrace();
+    private static void convertStringToImage() throws IOException {
+        while (!(messageFromServer = in.readLine()).equals(Protocol.SERVER_END_OF_STREAM) && !messageFromServer.equals(Protocol.SERVER_DECLINE_CONNECTION)) {
+            if (!messageFromServer.trim().isEmpty()) {
+                byte[] bytes = Base64.getDecoder().decode(messageFromServer.getBytes());
+                Chat.displayPictureInHTML(bytes);
             }
-            Chat.displayPictureInHTML();
         }
     }
 

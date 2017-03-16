@@ -12,6 +12,7 @@ import java.net.Socket;
 public final class LoginButtonActionListener extends AbstractAction {
     private JTextField usernameField;
     private JPasswordField passwordField;
+    //TODO Make SECRET generatable and synchronize it with a server.
     private static final transient String SECRET = "LKJoi8d9ausoiJOIOIDU8ouod88ujdsou8rpoe;mg.,srlkjs98";
 
     /**
@@ -33,8 +34,6 @@ public final class LoginButtonActionListener extends AbstractAction {
         StrongTextEncryptor textEncryptor = new StrongTextEncryptor();
         textEncryptor.setPassword(SECRET);
         String myEncryptedDetails = textEncryptor.encrypt(loginDetails);
-        System.out.println(myEncryptedDetails);
-
 
         try {
             Socket socket = new Socket(Protocol.HOST, Protocol.PORT);

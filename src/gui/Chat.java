@@ -130,7 +130,7 @@ public class Chat extends JPanel implements Runnable {
     /**
      * This method displays @param icon in our messageDisplayPane.
      */
-    public static void displayPictureInHTML() {
+    public static void displayPictureInHTML(byte[] bytes) {
         //FIXME This method is under work.
         try {
             editorKit.insertHTML(doc, doc.getLength(), "<img src=\"file:\\C:\\lgim\\code\\java\\ClientChatGUI\\img.jpg\" width=70 height=70>", 0, 0, null);
