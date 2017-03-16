@@ -102,8 +102,7 @@ public class Chat extends JPanel implements Runnable {
     }
 
     public static void closeChattingGui() {
-        //TODO Need to actually close chatting gui !
-        mainFrame.setVisible(false);
+        mainFrame.dispose();
     }
 
     public static String getTableModelValue(int row) {
