@@ -1,14 +1,12 @@
 package listeners;
 
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetEvent;
-import java.awt.dnd.DropTargetListener;
+import java.awt.dnd.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
-public final class DropListener implements DropTargetListener {
+public final class DropListener implements DropTargetListener, Serializable {
     /**
      * Called while a drag operation is ongoing, when the mouse pointer enters
      * the operable part of the drop site for the <code>DropTarget</code>
@@ -90,24 +88,13 @@ public final class DropListener implements DropTargetListener {
      */
     @Override
     public void drop(DropTargetDropEvent dtde) {
-        try {
-            Transferable t = dtde.getTransferable();
-
-            if (dtde.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-                dtde.acceptDrop(dtde.getDropAction());
-
-                String s;
-                s = t.getTransferData(DataFlavor.stringFlavor).toString();
-
-                System.out.println(s);
-
-                dtde.dropComplete(true);
-            } else
-                dtde.rejectDrop();
-        } catch (java.io.IOException | UnsupportedFlavorException e2) {
-            System.out.println(e2.getMessage());
-        }
-
-
+        //TODO Implement.
     }
+
+  /*  private static byte[] serialize(Object obj) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ObjectOutputStream os = new ObjectOutputStream(out);
+        os.writeObject(obj);
+        return out.toByteArray();
+    }*/
 }

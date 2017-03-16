@@ -39,8 +39,7 @@ public final class Receiver implements Runnable {
                     case Protocol.SERVER_ACCEPT_CONNECTION:
                         Login.disableLoginFrame();
                         new Thread(new Chat()).start();
-                        //  getMissedMessages();
-                        // getUsersOnline();
+                        getUsersOnlineAndMissedMessages();
                         break;
                 }
             }
@@ -72,6 +71,7 @@ public final class Receiver implements Runnable {
         boolean showMessageInGui = true;
 
         if (messageFromServer.contains(Protocol.IMAGE_STRING)) {
+            //TODO Put in SWITCH statement and improve..
             convertStringToImage();
             showMessageInGui = false;
         }
@@ -93,11 +93,12 @@ public final class Receiver implements Runnable {
                 populateOnlineUserTable();
                 showMessageInGui = false;
                 break;
-            case Protocol.SERVER_ACKNOWLEDGE_MISSED_MESSAGES:
-                while (!(messageFromServer = in.readLine()).equals(Protocol.SERVER_END_OF_STREAM) && !messageFromServer.equals(Protocol.SERVER_DECLINE_CONNECTION)) {
-                    System.out.println(messageFromServer);
-                    Chat.displayMessageInHTML(messageFromServer, "blue", false);
-                }
+            case Protocol.SERVER_ACKNOWLEDGE_MISSED_MESSAGES: //When our server notifies us about missed messages, we request them.
+                Sender.sendMessageToServer(Protocol.GET_MISSED_MESSAGES);
+                showMessageInGui = false;
+                break;
+            case Protocol.SERVER_MISSED_MESSAGES_STREAM:
+                printOutMissedMessagesStream();
                 showMessageInGui = false;
                 break;
         }
@@ -119,10 +120,25 @@ public final class Receiver implements Runnable {
     }
 
     /**
-     * This method requests and receives all user online and populates onlineUserTable.
+     * This method requests all users online and missed messages with a delay.
+     * This is done because our receiver block is not running when we send requests,
+     * so we need to send our requests a bit later.
      */
-    public static void getUsersOnline() {
-        Sender.sendMessageToServer(Protocol.GET_USERS_ONLINE);
+    private static void getUsersOnlineAndMissedMessages() {
+        new Thread(() -> {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Sender.sendMessageToServer(Protocol.GET_USERS_ONLINE);
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Sender.sendMessageToServer(Protocol.GET_MISSED_MESSAGES);
+        }).start();
     }
 
     /**
@@ -160,6 +176,17 @@ public final class Receiver implements Runnable {
 
         } catch (IOException err) {
             System.out.println("Error: Failed to populate online users table\n" + err.getMessage());
+        }
+    }
+
+    /**
+     * This method prints out all missed messages our server sends us.
+     *
+     * @throws IOException - possible exception
+     */
+    private static void printOutMissedMessagesStream() throws IOException {
+        while (!(messageFromServer = in.readLine()).equals(Protocol.SERVER_END_OF_STREAM) && !messageFromServer.equals(Protocol.SERVER_DECLINE_CONNECTION)) {
+            Chat.displayMessageInHTML(messageFromServer, "red", false);
         }
     }
 

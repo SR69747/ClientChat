@@ -74,7 +74,7 @@ public final class Sender implements Runnable {
         if ((messageToServer = Chat.getUserInputText()) != null && !messageToServer.trim().isEmpty()) {
             try {
                 if (!selectedUserName.isEmpty()) {
-                    out.write(String.format("S:TO@¬%s¬%s\n", selectedUserName.trim(), messageToServer));
+                    out.write(String.format("\u0002@\u0003%s\u0003%s\n", selectedUserName.trim(), messageToServer));
                     out.flush();
                 } else {
                     out.write(messageToServer + '\n');

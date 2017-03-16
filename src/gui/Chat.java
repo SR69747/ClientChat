@@ -99,7 +99,6 @@ public class Chat extends JPanel implements Runnable {
             mainFrame.add(sendPanel, BorderLayout.SOUTH);
             mainFrame.add(new JScrollPane(messageDisplayPane), BorderLayout.CENTER);
             mainFrame.add(userScrollPane, BorderLayout.EAST);
-            Receiver.getUsersOnline();
         });
     }
 
