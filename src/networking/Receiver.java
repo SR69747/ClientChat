@@ -3,10 +3,16 @@ package networking;
 import gui.Chat;
 import gui.Login;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.Base64;
 
 public final class Receiver implements Runnable {
 
@@ -93,10 +99,10 @@ public final class Receiver implements Runnable {
                 populateOnlineUserTable();
                 showMessageInGui = false;
                 break;
-            case Protocol.SERVER_ACKNOWLEDGE_MISSED_MESSAGES: //When our server notifies us about missed messages, we request them.
-                Sender.sendMessageToServer(Protocol.GET_MISSED_MESSAGES);
-                showMessageInGui = false;
-                break;
+//            case Protocol.SERVER_ACKNOWLEDGE_MISSED_MESSAGES: //When our server notifies us about missed messages, we request them.
+//                Sender.sendMessageToServer(Protocol.GET_MISSED_MESSAGES);
+//                showMessageInGui = false;
+//                break;
             case Protocol.SERVER_MISSED_MESSAGES_STREAM:
                 printOutMissedMessagesStream();
                 showMessageInGui = false;
@@ -111,11 +117,24 @@ public final class Receiver implements Runnable {
      */
     private static void convertStringToImage() {
         //FIXME This method is under work.
+        File file = new File("img.jpg");
         String stringImage = messageFromServer.split("#")[1];
         if (!stringImage.trim().isEmpty()) {
-            //   byte[] bytes = Base64.getDecoder().decode(stringImage.getBytes());
-            // ImageIcon pictureImage = new ImageIcon(bytes);
-            Chat.displayPictureInHTML(stringImage);
+            byte[] bytes = Base64.getDecoder().decode(stringImage.getBytes());
+            //Saving our image to file because HTMLDocument class in Java can not display Base64 images.
+            //This method needs some work
+            Image img = new ImageIcon(bytes).getImage();
+            BufferedImage bi = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2 = bi.createGraphics();
+            g2.drawImage(img, 0, 0, null);
+            g2.dispose();
+            try {
+
+                ImageIO.write(bi, "png", file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Chat.displayPictureInHTML();
         }
     }
 

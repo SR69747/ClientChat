@@ -1,7 +1,6 @@
 package gui;
 
 import listeners.*;
-import networking.Receiver;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -130,16 +129,12 @@ public class Chat extends JPanel implements Runnable {
 
     /**
      * This method displays @param icon in our messageDisplayPane.
-     *
-     * @param base64 - our Image in base64 String
      */
-    public static void displayPictureInHTML(String base64) {
+    public static void displayPictureInHTML() {
         //FIXME This method is under work.
         try {
-            // String e = Base64.getEncoder().encodeToString(base64);
-            /*<img src="https://www.gravatar.com/avatar/89ec268d347a422368b2d8cbcc5e059b?s=32&amp;d=identicon&amp;r=PG" alt="" width="32" height="32">*/
-            System.out.println(base64);
-            editorKit.insertHTML(doc, doc.getLength(), "<img src=\"data:image/png;base64," + base64 + "\" />", 0, 0, null);
+            editorKit.insertHTML(doc, doc.getLength(), "<img src=\"file:\\C:\\lgim\\code\\java\\ClientChatGUI\\img.jpg\" width=70 height=70>", 0, 0, null);
+            // editorKit.insertHTML(doc, doc.getLength(), "<img src=\"data:image/png;base64," + base64 + "\" />", 0, 0, null);
         } catch (BadLocationException | IOException e) {
             e.printStackTrace();
         }
