@@ -3,12 +3,7 @@ package networking;
 import gui.Chat;
 import gui.Login;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
@@ -185,7 +180,8 @@ public final class Receiver implements Runnable {
      */
     private static void printOutMissedMessagesStream() throws IOException {
         while (!(messageFromServer = in.readLine()).equals(Protocol.SERVER_END_OF_STREAM) && !messageFromServer.equals(Protocol.SERVER_DECLINE_CONNECTION)) {
-            Chat.displayMessageInHTML(messageFromServer, "red", false);
+            //TODO Display missed messages in other color.
+            Chat.displayMessageInHTML(messageFromServer, "green", false);
         }
     }
 

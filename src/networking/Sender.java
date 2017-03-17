@@ -35,9 +35,7 @@ public final class Sender implements Runnable {
             new Thread(new Receiver(socket)).start();
 
             //Takes login details and sends them to server for checks
-            out.write(loginDetails + '\n');
-            out.flush();
-
+            sendMessageToServer(loginDetails);
 
         } catch (IOException e) {
             System.out.println("Error: " + e.getMessage());
