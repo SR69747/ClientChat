@@ -7,7 +7,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.util.Base64;
 
 public final class Receiver implements Runnable {
 
@@ -71,11 +70,12 @@ public final class Receiver implements Runnable {
     private static boolean checkServerSpecialMessages() throws IOException {
         boolean showMessageInGui = true;
 
+        if (messageFromServer.contains(Protocol.SERVER_IMAGE_STREAM)) {
+            convertStringToImage();
+            showMessageInGui = false;
+        }
+
         switch (messageFromServer) {
-            case Protocol.SERVER_IMAGE_STREAM:
-                convertStringToImage();
-                showMessageInGui = false;
-                break;
             case Protocol.SERVER_ACCEPT_CONNECTION:
                 System.out.println("Connection Accepted\n");
                 showMessageInGui = false;
@@ -105,11 +105,10 @@ public final class Receiver implements Runnable {
      * Note that this method is triggered when messageFromServer contains IMAGE_STRING.
      */
     private static void convertStringToImage() throws IOException {
-        while (!(messageFromServer = in.readLine()).equals(Protocol.SERVER_END_OF_STREAM) && !messageFromServer.equals(Protocol.SERVER_DECLINE_CONNECTION)) {
-            if (!messageFromServer.trim().isEmpty()) {
-                byte[] bytes = Base64.getDecoder().decode(messageFromServer.getBytes());
-                Chat.displayPictureInHTML(bytes);
-            }
+        String stringImage = messageFromServer.split("#")[1];
+        String clientName = messageFromServer.split("\u0003")[1];
+        if (!stringImage.trim().isEmpty()) {
+            Chat.displayPictureInHTML(stringImage, clientName);
         }
     }
 

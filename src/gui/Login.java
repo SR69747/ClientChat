@@ -61,10 +61,9 @@ public class Login {
 
     //Work on this !
     public static void disableLoginFrame() {
-        //TODO Need to actually close loginFrame, not set it to invisible, as it continues to run at the background when our application is closed .
+        //TODO Need to actually close loginFrame, when we terminate our application.
         loginFrame.setVisible(false);
 //       loginFrame.dispatchEvent(new WindowEvent(loginFrame, WindowEvent.WINDOW_CLOSING));
-
     }
 
     public static void enableLoginFrame() {

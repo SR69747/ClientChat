@@ -6,7 +6,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLEditorKit;
+
 import java.awt.*;
 import java.awt.dnd.DropTarget;
 import java.awt.event.KeyEvent;
@@ -36,7 +36,7 @@ public class Chat extends JPanel implements Runnable {
     private static JMenuItem changeTheme = new JMenuItem("Change theme");
 
     private static HTMLDocument doc;
-    private static HTMLEditorKit editorKit;
+    private static CustomHTMLEditorKit editorKit;
 
     private static ImageIcon onlineIcon = new ImageIcon("C:\\lgim\\code\\java\\onlineIcon2.jpg");
     private static ImageIcon offlineIcon = new ImageIcon("C:\\lgim\\code\\java\\offlineIcon2.jpg");
@@ -61,8 +61,10 @@ public class Chat extends JPanel implements Runnable {
 
             //FIXME Trying to use html on textPane.
             messageDisplayPane.setContentType("text/html");
+            messageDisplayPane.setEditorKit(new CustomHTMLEditorKit());
+            editorKit = (CustomHTMLEditorKit) messageDisplayPane.getEditorKit();
             doc = (HTMLDocument) messageDisplayPane.getDocument();
-            editorKit = (HTMLEditorKit) messageDisplayPane.getEditorKit();
+
             displayMessageInHTML("Welcome to chatting GUI", "blue", false);
 
             messageSendTextField.addKeyListener(new TextFieldKeyListener());
@@ -129,11 +131,11 @@ public class Chat extends JPanel implements Runnable {
     /**
      * This method displays @param icon in our messageDisplayPane.
      */
-    public static void displayPictureInHTML(byte[] bytes) {
+    public static void displayPictureInHTML(String imageString, String clientName) {
         //FIXME This method is under work.
         try {
-            editorKit.insertHTML(doc, doc.getLength(), "<img src=\"file:\\C:\\lgim\\code\\java\\ClientChatGUI\\img.jpg\" width=70 height=70>", 0, 0, null);
-            // editorKit.insertHTML(doc, doc.getLength(), "<img src=\"data:image/png;base64," + base64 + "\" />", 0, 0, null);
+            displayMessageInHTML(clientName + " sent you an image:", "orange", true);
+            editorKit.insertHTML(doc, doc.getLength(), "<img src=\"data:image/png;base64," + imageString + "\" width=200 height=150>", 0, 0, null);
         } catch (BadLocationException | IOException e) {
             e.printStackTrace();
         }
