@@ -12,6 +12,7 @@ public final class Sender implements Runnable {
     private static BufferedWriter out;
     private static Socket socket;
     private static String loginDetails;
+
     private static String selectedUserName = "";
 
     public Sender(Socket socket, String loginDetails) {
@@ -111,4 +112,9 @@ public final class Sender implements Runnable {
             System.out.println("Failed to close sender resources: \n" + e.getMessage());
         }
     }
+
+    public static String getSelectedUserName() {
+        return selectedUserName;
+    }
+
 }

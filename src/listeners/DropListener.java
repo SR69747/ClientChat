@@ -93,14 +93,19 @@ public final class DropListener implements DropTargetListener, Serializable {
     public void drop(DropTargetDropEvent dtde) {
         try {
             Transferable t = dtde.getTransferable();
-            
+
             if (dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
                 dtde.acceptDrop(dtde.getDropAction());
                 Object o = t.getTransferData(DataFlavor.javaFileListFlavor);
                 if (o != null) {
                     String path = o.toString().substring(1, o.toString().length() - 1);
                     if (path.contains(".jpg") || path.contains(".png")) {
-                        Sender.sendMessageToServer("\u0002#" + encodeFileToBase64Binary(new File(path)));
+                        //TODO Simplify, move it to the method in Sender class
+                        if (!Sender.getSelectedUserName().isEmpty()) {
+                            Sender.sendMessageToServer(String.format("\u0002@\u0003%s\u0003%s\n", Sender.getSelectedUserName().trim(), "\u0002#" + encodeFileToBase64Binary(new File(path))));
+                        } else {
+                            Sender.sendMessageToServer("\u0002#" + encodeFileToBase64Binary(new File(path)));
+                        }
                     }
                 }
                 dtde.dropComplete(true);
