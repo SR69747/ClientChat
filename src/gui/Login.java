@@ -28,12 +28,10 @@ public class Login {
 
     public static void launchLoginGui() {
 
-        loginFrame.setBounds(300, 300, 300, 300);
         loginFrame.setLayout(new BorderLayout());
         loginFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         loginFrame.setVisible(true);
         loginFrame.setAlwaysOnTop(true);
-        loginFrame.add(loginPanel, BorderLayout.CENTER);
 
         loginMessage.setBackground(null);
         loginMessage.setEditable(false);
@@ -48,11 +46,15 @@ public class Login {
         buttonPanel.add(loginButton);
 
         // Panels are then added to main frame here
+        loginPanel.setBounds(300, 300, 300, 300);
         loginPanel.setLayout(new BoxLayout(loginPanel, BoxLayout.Y_AXIS));
         loginPanel.add(messagePanel);
         loginPanel.add(usernamePanel);
         loginPanel.add(passwordPanel);
         loginPanel.add(buttonPanel);
+
+        loginFrame.add(loginPanel, BorderLayout.CENTER);
+        loginFrame.pack();
 
         loginButton.addActionListener(new LoginButtonActionListener(usernameField, passwordField));
     }
