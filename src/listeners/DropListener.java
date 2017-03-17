@@ -1,5 +1,6 @@
 package listeners;
 
+import gui.Chat;
 import networking.Sender;
 
 import java.awt.datatransfer.DataFlavor;
@@ -106,6 +107,8 @@ public final class DropListener implements DropTargetListener, Serializable {
                         } else {
                             Sender.sendMessageToServer("\u0002#" + encodeFileToBase64Binary(new File(path)));
                         }
+                    }else {
+                        Chat.displayMessageInHTML("Error: Unknown File","red",false);
                     }
                 }
                 dtde.dropComplete(true);
