@@ -1,7 +1,13 @@
 package listeners;
 
+import networking.Sender;
+
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
-import java.io.Serializable;
+import java.io.*;
+import java.util.Base64;
 
 public final class DropListener implements DropTargetListener, Serializable {
     /**
@@ -85,13 +91,42 @@ public final class DropListener implements DropTargetListener, Serializable {
      */
     @Override
     public void drop(DropTargetDropEvent dtde) {
-        //TODO Implement.
+        try {
+            Transferable t = dtde.getTransferable();
+            
+            if (dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                dtde.acceptDrop(dtde.getDropAction());
+                Object o = t.getTransferData(DataFlavor.javaFileListFlavor);
+                if (o != null) {
+                    String path = o.toString().substring(1, o.toString().length() - 1);
+                    if (path.contains(".jpg") || path.contains(".png")) {
+                        Sender.sendMessageToServer("\u0002#" + encodeFileToBase64Binary(new File(path)));
+                    }
+                }
+                dtde.dropComplete(true);
+            }
+        } catch (java.io.IOException | UnsupportedFlavorException e2) {
+            System.out.println(e2.getMessage());
+        }
     }
 
-  /*  private static byte[] serialize(Object obj) throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream os = new ObjectOutputStream(out);
-        os.writeObject(obj);
-        return out.toByteArray();
-    }*/
+    private static String encodeFileToBase64Binary(File file) {
+        String encodedFile = null;
+        try {
+            FileInputStream fileInputStreamReader = new FileInputStream(file);
+            byte[] bytes = new byte[(int) file.length()];
+            fileInputStreamReader.read(bytes);
+            encodedFile = Base64.getEncoder().encodeToString(bytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return encodedFile;
+    }
+
+//    private static byte[] serialize(Object obj) throws IOException {
+//        ByteArrayOutputStream out = new ByteArrayOutputStream();
+//        ObjectOutputStream os = new ObjectOutputStream(out);
+//        os.writeObject(obj);
+//        return out.toByteArray();
+//    }
 }

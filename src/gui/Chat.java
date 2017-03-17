@@ -135,7 +135,7 @@ public class Chat extends JPanel implements Runnable {
         //FIXME This method is under work.
         try {
             displayMessageInHTML(clientName + " sent you an image:", "orange", true);
-            editorKit.insertHTML(doc, doc.getLength(), "<img src=\"data:image/png;base64," + imageString + "\" width=200 height=150>", 0, 0, null);
+            editorKit.insertHTML(doc, doc.getLength(), "<img src=\"data:image/png;base64," + imageString + "\">", 0, 0, null);
         } catch (BadLocationException | IOException e) {
             e.printStackTrace();
         }

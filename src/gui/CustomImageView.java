@@ -53,6 +53,7 @@ import javax.xml.bind.DatatypeConverter;
  * @see IconView
  * @since 1.4
  */
+@SuppressWarnings("ALL")
 public class CustomImageView extends View {
     /**
      * If true, when some of the bits are available a repaint is done.
