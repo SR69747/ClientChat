@@ -59,7 +59,6 @@ public class Chat extends JPanel implements Runnable {
             messageDisplayPane.setEditable(false);
             messageDisplayPane.setAutoscrolls(true);
 
-            //FIXME Trying to use html on textPane.
             messageDisplayPane.setContentType("text/html");
             messageDisplayPane.setEditorKit(new CustomHTMLEditorKit());
             editorKit = (CustomHTMLEditorKit) messageDisplayPane.getEditorKit();
@@ -132,7 +131,6 @@ public class Chat extends JPanel implements Runnable {
      * This method displays @param icon in our messageDisplayPane.
      */
     public static void displayPictureInHTML(String imageString, String clientName) {
-        //FIXME This method is under work.
         try {
             displayMessageInHTML(clientName + " sent you an image:", "orange", true);
             editorKit.insertHTML(doc, doc.getLength(), "<img src=\"data:image/png;base64," + imageString + "\">", 0, 0, null);

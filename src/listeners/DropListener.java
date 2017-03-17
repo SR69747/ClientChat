@@ -8,7 +8,6 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
 import java.io.*;
-import java.util.Base64;
 
 public final class DropListener implements DropTargetListener, Serializable {
     /**
@@ -101,14 +100,9 @@ public final class DropListener implements DropTargetListener, Serializable {
                 if (o != null) {
                     String path = o.toString().substring(1, o.toString().length() - 1);
                     if (path.contains(".jpg") || path.contains(".png")) {
-                        //TODO Simplify, move it to the method in Sender class
-                        if (!Sender.getSelectedUserName().isEmpty()) {
-                            Sender.sendMessageToServer(String.format("\u0002@\u0003%s\u0003%s\n", Sender.getSelectedUserName().trim(), "\u0002#" + encodeFileToBase64Binary(new File(path))));
-                        } else {
-                            Sender.sendMessageToServer("\u0002#" + encodeFileToBase64Binary(new File(path)));
-                        }
-                    }else {
-                        Chat.displayMessageInHTML("Error: Unknown File","red",false);
+                        Sender.sendImageToServer(path);
+                    } else {
+                        Chat.displayMessageInHTML("Error: Unknown File", "red", false);
                     }
                 }
                 dtde.dropComplete(true);
@@ -118,23 +112,4 @@ public final class DropListener implements DropTargetListener, Serializable {
         }
     }
 
-    private static String encodeFileToBase64Binary(File file) {
-        String encodedFile = null;
-        try {
-            FileInputStream fileInputStreamReader = new FileInputStream(file);
-            byte[] bytes = new byte[(int) file.length()];
-            fileInputStreamReader.read(bytes);
-            encodedFile = Base64.getEncoder().encodeToString(bytes);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return encodedFile;
-    }
-
-//    private static byte[] serialize(Object obj) throws IOException {
-//        ByteArrayOutputStream out = new ByteArrayOutputStream();
-//        ObjectOutputStream os = new ObjectOutputStream(out);
-//        os.writeObject(obj);
-//        return out.toByteArray();
-//    }
 }

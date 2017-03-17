@@ -2,10 +2,9 @@ package networking;
 
 import gui.Chat;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.Socket;
+import java.util.Base64;
 
 public final class Sender implements Runnable {
 
@@ -69,8 +68,7 @@ public final class Sender implements Runnable {
      */
     public static void sendMessageToServer() {
         String messageToServer;
-        //TODO && !messageToServer.contains(Protocol.IMAGE_STRING)
-        if ((messageToServer = Chat.getUserInputText()) != null && !messageToServer.trim().isEmpty()) {
+        if ((messageToServer = Chat.getUserInputText()) != null && !messageToServer.trim().isEmpty() && !messageToServer.contains(Protocol.SERVER_MISSED_MESSAGES_STREAM)) {
             try {
                 if (!selectedUserName.isEmpty()) {
                     out.write(String.format("\u0002@\u0003%s\u0003%s\n", selectedUserName.trim(), messageToServer));
@@ -86,6 +84,38 @@ public final class Sender implements Runnable {
                 closeSenderResources();
             }
         }
+    }
+
+    /**
+     * This method send an image to server.
+     *
+     * @param path - String representing our file path
+     */
+    public static void sendImageToServer(String path) {
+        if (!selectedUserName.isEmpty()) {
+            Sender.sendMessageToServer(String.format("\u0002@\u0003%s\u0003%s\n", Sender.selectedUserName, "\u0002#" + encodeFileToBase64Binary(new File(path))));
+        } else {
+            Sender.sendMessageToServer("\u0002#" + encodeFileToBase64Binary(new File(path)));
+        }
+    }
+
+    /**
+     * This method encodes any file given to String.
+     *
+     * @param file - our File with path.
+     * @return Base64 encoded String representation of our file
+     */
+    private static String encodeFileToBase64Binary(File file) {
+        String encodedFile = null;
+        try {
+            FileInputStream fileInputStreamReader = new FileInputStream(file);
+            byte[] bytes = new byte[(int) file.length()];
+            fileInputStreamReader.read(bytes);
+            encodedFile = Base64.getEncoder().encodeToString(bytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return encodedFile;
     }
 
     /**
@@ -111,10 +141,6 @@ public final class Sender implements Runnable {
         } catch (IOException e) {
             System.out.println("Failed to close sender resources: \n" + e.getMessage());
         }
-    }
-
-    public static String getSelectedUserName() {
-        return selectedUserName;
     }
 
 }
