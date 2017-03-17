@@ -179,8 +179,10 @@ public final class Receiver implements Runnable {
      */
     private static void printOutMissedMessagesStream() throws IOException {
         while (!(messageFromServer = in.readLine()).equals(Protocol.SERVER_END_OF_STREAM) && !messageFromServer.equals(Protocol.SERVER_DECLINE_CONNECTION)) {
-            //TODO Display missed messages in other color.
-            Chat.displayMessageInHTML(messageFromServer, "green", false);
+            if(messageFromServer.contains(Protocol.SERVER_IMAGE_STREAM)){
+                convertStringToImage();
+            }else{
+            Chat.displayMessageInHTML(messageFromServer, "green", false);}
         }
     }
 
