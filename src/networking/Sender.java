@@ -93,9 +93,9 @@ public final class Sender implements Runnable {
      */
     public static void sendImageToServer(String path) {
         if (!selectedUserName.isEmpty()) {
-            Sender.sendMessageToServer(String.format("\u0002@\u0003%s\u0003%s\n", Sender.selectedUserName, "\u0002#" + encodeFileToBase64Binary(new File(path))));
+            Sender.sendMessageToServer(String.format("\u0002@\u0003%s\u0003%s\n", Sender.selectedUserName, Protocol.SERVER_IMAGE_STREAM + encodeFileToBase64Binary(new File(path))));
         } else {
-            Sender.sendMessageToServer("\u0002#" + encodeFileToBase64Binary(new File(path)));
+            Sender.sendMessageToServer(Protocol.SERVER_IMAGE_STREAM + encodeFileToBase64Binary(new File(path)));
         }
     }
 
