@@ -5,6 +5,7 @@ import listeners.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLDocument;
 
 import java.awt.*;
@@ -58,6 +59,8 @@ public class Chat extends JPanel implements Runnable {
             // set message display properties
             messageDisplayPane.setEditable(false);
             messageDisplayPane.setAutoscrolls(true);
+            DefaultCaret caret = (DefaultCaret)messageDisplayPane.getCaret();
+            caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
             messageDisplayPane.setContentType("text/html");
             messageDisplayPane.setEditorKit(new CustomHTMLEditorKit());
