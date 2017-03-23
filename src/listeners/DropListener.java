@@ -103,11 +103,21 @@ public final class DropListener implements DropTargetListener, Serializable {
                 Object o = t.getTransferData(DataFlavor.javaFileListFlavor);
                 if (o != null) {
                     String path = o.toString().substring(1, o.toString().length() - 1);
+                    File file = new File(path);
                     if (path.contains(".jpg") || path.contains(".png")) {
-                        Sender.sendImageToServer(path);
+                        if (file.length() < 1000000L) {
+                            Sender.sendImageToServer(file);
+                        } else {
+                            Chat.displayMessageInHTML("Error: File is too big", "red", false);
+                        }
                     } else if (path.contains(".txt")) {
-                        String fileData = readFile(path);
-                        Sender.sendMessageToServer(fileData);
+
+                        if (file.length() < 1000000L) {
+                            String fileData = readFile(file);
+                            Sender.sendMessageToServer(fileData);
+                        } else {
+                            Chat.displayMessageInHTML("Error: File is too big", "red", false);
+                        }
                     } else {
                         Chat.displayMessageInHTML("Error: Unknown File", "red", false);
                     }
@@ -121,9 +131,9 @@ public final class DropListener implements DropTargetListener, Serializable {
         }
     }
 
-    private static String readFile(String path) {
+    private static String readFile(File file) {
         StringBuilder fileText = new StringBuilder(5);
-        try (BufferedReader br = new BufferedReader(new FileReader(new File(path)))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String currentLine;
             while ((currentLine = br.readLine()) != null) {
                 fileText.append(currentLine).append('\n');

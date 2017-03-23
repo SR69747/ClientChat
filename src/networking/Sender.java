@@ -90,14 +90,14 @@ public final class Sender implements Runnable {
     /**
      * This method send an image to server.
      *
-     * @param path - String representing our file path
+     * @param file - our file
      */
-    public static void sendImageToServer(String path) {
+    public static void sendImageToServer(File file) {
         if (!selectedUserName.isEmpty()) {
             //TODO Use Pattern.compile
-            Sender.sendMessageToServer(String.format("\u0002@\u0003%s\u0003%s\n", Sender.selectedUserName, Protocol.SERVER_IMAGE_STREAM + encodeFileToBase64Binary(new File(path))));
+            Sender.sendMessageToServer(String.format("\u0002@\u0003%s\u0003%s\n", Sender.selectedUserName, Protocol.SERVER_IMAGE_STREAM + encodeFileToBase64Binary(file)));
         } else {
-            Sender.sendMessageToServer(Protocol.SERVER_IMAGE_STREAM + encodeFileToBase64Binary(new File(path)));
+            Sender.sendMessageToServer(Protocol.SERVER_IMAGE_STREAM + encodeFileToBase64Binary(file));
         }
     }
 
