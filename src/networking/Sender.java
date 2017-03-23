@@ -6,6 +6,8 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Base64;
 
+import static networking.Protocol.REQUEST_LOGIN;
+
 public final class Sender implements Runnable {
 
     private static BufferedWriter out;
@@ -35,7 +37,7 @@ public final class Sender implements Runnable {
             new Thread(new Receiver(socket)).start();
 
             //Takes login details and sends them to server for checks
-            sendMessageToServer(loginDetails);
+            sendMessageToServer(REQUEST_LOGIN + loginDetails);
 
         } catch (IOException e) {
             System.out.println("Error: " + e.getMessage());
