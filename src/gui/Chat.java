@@ -3,7 +3,6 @@ package gui;
 import listeners.*;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLDocument;
@@ -29,7 +28,7 @@ public class Chat extends JPanel implements Runnable {
     private static String[] UserColumnNames = {"Username", "Status"};
     private static JTable onlineUserTable = new JTable();
     private static JScrollPane userScrollPane = new JScrollPane(onlineUserTable);
-    private static DefaultTableModel defaultTableModel = new DefaultTableModel();
+    private static CustomTableModel customTableModel = new CustomTableModel();
     private static JMenuBar menuBar = new JMenuBar();
     private static JMenu settingsMenu = new JMenu("Settings");
     private static JMenuItem signOut = new JMenuItem("Sign Out");
@@ -87,12 +86,13 @@ public class Chat extends JPanel implements Runnable {
             // set user table properties
             //TODO Set onlineUserTable cells unmodifiable.
             userScrollPane.setPreferredSize(new Dimension(135, 500));
-            onlineUserTable.setModel(defaultTableModel);
+            onlineUserTable.setModel(customTableModel);
             onlineUserTable.setAutoCreateRowSorter(true);
             onlineUserTable.setRowHeight(25);
-            defaultTableModel.setColumnIdentifiers(UserColumnNames);
+            customTableModel.setColumnIdentifiers(UserColumnNames);
             onlineUserTable.getColumnModel().getColumn(1).setCellRenderer(new UserTableIconRenderer());
             onlineUserTable.getSelectionModel().addListSelectionListener(new SelectedUserTableCellListener());
+
 
             // add components and panel to mainframe
             sendPanel.setLayout(new BorderLayout(8, 8));
@@ -111,8 +111,8 @@ public class Chat extends JPanel implements Runnable {
 
     public static String getTableModelValue(int row) {
         String data = "No Data";
-        if (defaultTableModel.getRowCount() != 0) {
-            data = (String) defaultTableModel.getValueAt(row, 0);
+        if (customTableModel.getRowCount() != 0) {
+            data = (String) customTableModel.getValueAt(row, 0);
         }
         return data;
     }
@@ -168,15 +168,15 @@ public class Chat extends JPanel implements Runnable {
     }
 
     public static int getTableModelRowCount() {
-        return defaultTableModel.getRowCount();
+        return customTableModel.getRowCount();
     }
 
     public static void addRowToTableModel(Object[] objects) {
-        defaultTableModel.addRow(objects);
+        customTableModel.addRow(objects);
     }
 
     public static void setTableStatusIcon(Object object, int rowCount) {
-        defaultTableModel.setValueAt(object, rowCount, 1);
+        customTableModel.setValueAt(object, rowCount, 1);
     }
 
     public static void repaintOnlineUserTableRows() {
