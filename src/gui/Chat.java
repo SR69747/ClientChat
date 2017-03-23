@@ -148,7 +148,7 @@ public class Chat extends JPanel implements Runnable {
      * @return String in this format [hh:mm:ss].
      */
     private static String getCurrentTimeStamp() {
-        return '[' + LocalTime.now().format(DateTimeFormatter.ofPattern("hh:mm:ss")) + "] ";
+        return '[' + LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "] ";
     }
 
     /**
