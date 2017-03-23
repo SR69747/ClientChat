@@ -7,9 +7,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.regex.Pattern;
 
 public final class Receiver implements Runnable {
 
+    private static final Pattern TEXT_SEPARATOR = Pattern.compile("\\u0003");
     private Socket socket;
     private static BufferedReader in;
     private static String messageFromServer;
@@ -105,11 +107,9 @@ public final class Receiver implements Runnable {
      * Note that this method is triggered when messageFromServer contains IMAGE_STRING.
      */
     private static void convertStringToImage() throws IOException {
-        String stringImage = messageFromServer.split("#")[1];
-        String clientName = messageFromServer.split("\u0003")[1];
-        if (!stringImage.trim().isEmpty()) {
-            Chat.displayPictureInHTML(stringImage, clientName);
-        }
+        String clientName = TEXT_SEPARATOR.split(messageFromServer)[1];
+        String stringImage = TEXT_SEPARATOR.split(messageFromServer.split("#")[1])[0];
+        Chat.displayPictureInHTML(stringImage, clientName);
     }
 
     /**
@@ -179,10 +179,11 @@ public final class Receiver implements Runnable {
      */
     private static void printOutMissedMessagesStream() throws IOException {
         while (!(messageFromServer = in.readLine()).equals(Protocol.SERVER_END_OF_STREAM) && !messageFromServer.equals(Protocol.SERVER_DECLINE_CONNECTION)) {
-            if(messageFromServer.contains(Protocol.SERVER_IMAGE_STREAM)){
+            if (messageFromServer.contains(Protocol.SERVER_IMAGE_STREAM)) {
                 convertStringToImage();
-            }else{
-            Chat.displayMessageInHTML(messageFromServer, "green", false);}
+            } else {
+                Chat.displayMessageInHTML(messageFromServer, "green", false);
+            }
         }
     }
 

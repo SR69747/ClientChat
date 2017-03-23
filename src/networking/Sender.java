@@ -51,6 +51,7 @@ public final class Sender implements Runnable {
      */
     public static void sendMessageToServer(String messageToServer) {
         if (messageToServer != null && !messageToServer.trim().isEmpty()) {
+            //FIXME When an image is sent to a specific person, this method sends a blank String to our server (to all people).
             try {
                 out.write(messageToServer + '\n');
                 out.flush();
@@ -93,6 +94,7 @@ public final class Sender implements Runnable {
      */
     public static void sendImageToServer(String path) {
         if (!selectedUserName.isEmpty()) {
+            //TODO Use Pattern.compile
             Sender.sendMessageToServer(String.format("\u0002@\u0003%s\u0003%s\n", Sender.selectedUserName, Protocol.SERVER_IMAGE_STREAM + encodeFileToBase64Binary(new File(path))));
         } else {
             Sender.sendMessageToServer(Protocol.SERVER_IMAGE_STREAM + encodeFileToBase64Binary(new File(path)));
@@ -102,7 +104,7 @@ public final class Sender implements Runnable {
     /**
      * This method encodes any file given to String.
      *
-     * @param file - our File with path.
+     * @param file - our File object.
      * @return Base64 encoded String representation of our file
      */
     private static String encodeFileToBase64Binary(File file) {
