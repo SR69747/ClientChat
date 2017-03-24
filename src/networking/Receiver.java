@@ -72,7 +72,7 @@ public final class Receiver implements Runnable {
     private static boolean checkServerSpecialMessages() throws IOException {
         boolean showMessageInGui = true;
 
-        if (messageFromServer.contains(Protocol.SERVER_IMAGE_STREAM)) {
+        if (messageFromServer.contains(Protocol.SERVER_IMAGE_STRING)) {
             convertStringToImage();
             showMessageInGui = false;
         }
@@ -86,15 +86,15 @@ public final class Receiver implements Runnable {
                 System.out.println("Connection Declined");
                 showMessageInGui = false;
                 break;
-            case Protocol.SERVER_ACKNOWLEDGE_ONLINE:  //When our server notifies us about online update, we request users online.
-                Sender.sendMessageToServer(Protocol.GET_USERS_ONLINE);
+            case Protocol.SERVER_ACKNOWLEDGE_DATABASE_UPDATE:  //When our server notifies us about online update, we request users online.
+                Sender.sendMessageToServer(Protocol.REQUEST_USERS_ONLINE);
                 showMessageInGui = false;
                 break;
-            case Protocol.SERVER_USERS_ONLINE_STREAM:
+            case Protocol.SERVER_STREAM_USERS_ONLINE:
                 populateOnlineUserTable();
                 showMessageInGui = false;
                 break;
-            case Protocol.SERVER_MISSED_MESSAGES_STREAM:
+            case Protocol.SERVER_STREAM_MISSED_MESSAGES:
                 printOutMissedMessagesStream();
                 showMessageInGui = false;
                 break;
@@ -107,8 +107,8 @@ public final class Receiver implements Runnable {
      * Note that this method is triggered when messageFromServer contains IMAGE_STRING.
      */
     private static void convertStringToImage() throws IOException {
-        String clientName = TEXT_SEPARATOR.split(messageFromServer)[1];
-        String stringImage = TEXT_SEPARATOR.split(messageFromServer.split("#")[1])[0];
+        String stringImage = TEXT_SEPARATOR.split(messageFromServer)[1];
+        String clientName = TEXT_SEPARATOR.split(messageFromServer)[2];
         Chat.displayPictureInHTML(stringImage, clientName);
     }
 
@@ -124,13 +124,13 @@ public final class Receiver implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            Sender.sendMessageToServer(Protocol.GET_USERS_ONLINE);
+            Sender.sendMessageToServer(Protocol.REQUEST_USERS_ONLINE);
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            Sender.sendMessageToServer(Protocol.GET_MISSED_MESSAGES);
+            Sender.sendMessageToServer(Protocol.REQUEST_MISSED_MESSAGES);
         }).start();
     }
 
@@ -179,7 +179,7 @@ public final class Receiver implements Runnable {
      */
     private static void printOutMissedMessagesStream() throws IOException {
         while (!(messageFromServer = in.readLine()).equals(Protocol.SERVER_END_OF_STREAM) && !messageFromServer.equals(Protocol.SERVER_DECLINE_CONNECTION)) {
-            if (messageFromServer.contains(Protocol.SERVER_IMAGE_STREAM)) {
+            if (messageFromServer.contains(Protocol.SERVER_IMAGE_STRING)) {
                 convertStringToImage();
             } else {
                 Chat.displayMessageInHTML(messageFromServer, "green", false);

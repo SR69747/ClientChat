@@ -71,10 +71,10 @@ public final class Sender implements Runnable {
      */
     public static void sendMessageToServer() {
         String messageToServer;
-        if ((messageToServer = Chat.getUserInputText()) != null && !messageToServer.trim().isEmpty() && !messageToServer.contains(Protocol.SERVER_MISSED_MESSAGES_STREAM)) {
+        if ((messageToServer = Chat.getUserInputText()) != null && !messageToServer.trim().isEmpty() && !messageToServer.contains(Protocol.SERVER_STREAM_MISSED_MESSAGES)) {
             try {
                 if (!selectedUserName.isEmpty()) {
-                    out.write(String.format("\u0002@\u0003%s\u0003%s\n", selectedUserName.trim(), messageToServer));
+                    out.write(String.format("%s%s\u0003%s\n", Protocol.SEND_MESSAGE_TO, selectedUserName.trim(), messageToServer));
                     out.flush();
                 } else {
                     out.write(messageToServer + '\n');
@@ -96,10 +96,9 @@ public final class Sender implements Runnable {
      */
     public static void sendImageToServer(File file) {
         if (!selectedUserName.isEmpty()) {
-            //TODO Use Pattern.compile
-            Sender.sendMessageToServer(String.format("\u0002@\u0003%s\u0003%s\n", Sender.selectedUserName, Protocol.SERVER_IMAGE_STREAM + encodeFileToBase64Binary(file)));
+            Sender.sendMessageToServer(String.format("%s%s\u0003%s\n", Protocol.SEND_MESSAGE_TO, Sender.selectedUserName, Protocol.SERVER_IMAGE_STRING + encodeFileToBase64Binary(file)));
         } else {
-            Sender.sendMessageToServer(Protocol.SERVER_IMAGE_STREAM + encodeFileToBase64Binary(file));
+            Sender.sendMessageToServer(Protocol.SERVER_IMAGE_STRING + encodeFileToBase64Binary(file));
         }
     }
 

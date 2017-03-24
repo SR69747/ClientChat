@@ -6,17 +6,21 @@ public final class Protocol {
 
     /**
      * PROTOCOL
-     * Special strings, which server can send us.
+     * Special strings, which server can send us or we can send to server.
      * They are not shown in a console.
      */
     static final String SERVER_ACCEPT_CONNECTION = "AC:+";
     static final String SERVER_DECLINE_CONNECTION = "EX:0";
-    static final String SERVER_ACKNOWLEDGE_ONLINE = "\u00061";
-    static final String SERVER_USERS_ONLINE_STREAM = "\u00021";
-    static final String SERVER_MISSED_MESSAGES_STREAM = "\u00022";
-    static final String SERVER_IMAGE_STREAM = "\u0002#";
+    static final String SERVER_ACKNOWLEDGE_DATABASE_UPDATE = "DA:B";
+    static final String SERVER_STREAM_USERS_ONLINE = "US:O";
+    static final String SERVER_STREAM_MISSED_MESSAGES = "MI:M";
     static final String SERVER_END_OF_STREAM = "\u0004";
-    static final String REQUEST_LOGIN = "\u0002*";
-    static final String GET_USERS_ONLINE = "ON:L";
-    static final String GET_MISSED_MESSAGES = "MS:0";
+    static final String SERVER_IMAGE_STRING = "IM:\u0003";
+
+    static final String SEND_MESSAGE_TO = "T@>\u0003";
+    static final String REQUEST_LOGIN = "\u0002\u0003";
+    static final String REQUEST_USERS_ONLINE = "ON:L";
+    static final String REQUEST_MISSED_MESSAGES = "MS:0";
+    //static final String REQUEST_REGISTRATION = "\u0001\u0003";
+
 }
