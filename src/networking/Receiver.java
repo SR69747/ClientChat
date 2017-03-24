@@ -78,14 +78,6 @@ public final class Receiver implements Runnable {
         }
 
         switch (messageFromServer) {
-            case Protocol.SERVER_ACCEPT_CONNECTION:
-                System.out.println("Connection Accepted\n");
-                showMessageInGui = false;
-                break;
-            case Protocol.SERVER_DECLINE_CONNECTION:
-                System.out.println("Connection Declined");
-                showMessageInGui = false;
-                break;
             case Protocol.SERVER_ACKNOWLEDGE_DATABASE_UPDATE:  //When our server notifies us about online update, we request users online.
                 Sender.sendMessageToServer(Protocol.REQUEST_USERS_ONLINE);
                 showMessageInGui = false;
