@@ -25,6 +25,8 @@ public class Login {
     private static JPanel usernamePanel = new JPanel();
     private static JPanel passwordPanel = new JPanel();
     private static JPanel buttonPanel = new JPanel();
+    private static Icon pic2;
+    private static JLabel imagelabel = new JLabel();
 
     public static void launchLoginGui() {
 
@@ -44,6 +46,10 @@ public class Login {
         passwordPanel.add(passwordLabel);
         passwordPanel.add(passwordField);
         buttonPanel.add(loginButton);
+        pic2 = new ImageIcon("C:\\lgim\\code\\java\\LgimControlMenu\\src\\LGIMU3.png");
+        imagelabel.setIcon(pic2);
+        buttonPanel.add(imagelabel);
+
 
         // Panels are then added to main frame here
         loginPanel.setBounds(300, 300, 300, 300);
@@ -52,6 +58,12 @@ public class Login {
         loginPanel.add(usernamePanel);
         loginPanel.add(passwordPanel);
         loginPanel.add(buttonPanel);
+        messagePanel.setBackground(Color.WHITE);
+        usernamePanel.setBackground(Color.WHITE);
+        passwordPanel.setBackground(Color.WHITE);
+        buttonPanel.setBackground(Color.WHITE);
+
+
 
         loginFrame.add(loginPanel, BorderLayout.CENTER);
         loginFrame.pack();
