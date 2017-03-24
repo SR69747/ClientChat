@@ -38,8 +38,8 @@ public class Chat extends JPanel implements Runnable {
     private static HTMLDocument doc;
     private static CustomHTMLEditorKit editorKit;
 
-    private static ImageIcon onlineIcon = new ImageIcon("C:\\lgim\\code\\java\\onlineIcon2.jpg");
-    private static ImageIcon offlineIcon = new ImageIcon("C:\\lgim\\code\\java\\offlineIcon2.jpg");
+    private static ImageIcon onlineIcon = new ImageIcon("src/resources/onlineIcon.jpg");
+    private static ImageIcon offlineIcon = new ImageIcon("src/resources/offlineIcon.jpg");
 
     public void run() {
 
@@ -58,7 +58,7 @@ public class Chat extends JPanel implements Runnable {
             // set message display properties
             messageDisplayPane.setEditable(false);
             messageDisplayPane.setAutoscrolls(true);
-            DefaultCaret caret = (DefaultCaret)messageDisplayPane.getCaret();
+            DefaultCaret caret = (DefaultCaret) messageDisplayPane.getCaret();
             caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
             messageDisplayPane.setContentType("text/html");
