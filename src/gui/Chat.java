@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-public class Chat extends JPanel implements Runnable {
+public final class Chat extends JPanel implements Runnable {
 
     private static JFrame mainFrame = new JFrame();
     private static final int WINDOW_WIDTH = 500;
@@ -54,6 +54,7 @@ public class Chat extends JPanel implements Runnable {
             mainFrame.setLayout(new BorderLayout(8, 8));
             mainFrame.setVisible(true);
             mainFrame.setTitle("Chatting - " + Login.getUsername());
+            mainFrame.addWindowListener(new ChatFrameListener());
 
             // set message display properties
             messageDisplayPane.setEditable(false);
@@ -105,7 +106,7 @@ public class Chat extends JPanel implements Runnable {
         });
     }
 
-    public static void closeChattingGui() {
+    public static void disposeChattingGui() {
         mainFrame.dispose();
     }
 

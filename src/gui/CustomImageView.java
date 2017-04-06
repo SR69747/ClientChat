@@ -54,7 +54,7 @@ import javax.xml.bind.DatatypeConverter;
  * @since 1.4
  */
 @SuppressWarnings("ALL")
-public class CustomImageView extends View {
+public final class CustomImageView extends View {
     /**
      * If true, when some of the bits are available a repaint is done.
      * <p>

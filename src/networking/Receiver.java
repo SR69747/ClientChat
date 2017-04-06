@@ -56,9 +56,10 @@ public final class Receiver implements Runnable {
         } catch (IOException e) {
             System.out.println("Error: " + e.getMessage());
         } finally {
+            Chat.disposeChattingGui();
+            Login.disposeLoginFrame();
             closeReceiverResources();
             Sender.closeSenderResources();
-            Chat.closeChattingGui();
         }
     }
 

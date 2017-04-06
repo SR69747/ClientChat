@@ -5,7 +5,7 @@ import listeners.LoginButtonActionListener;
 import javax.swing.*;
 import java.awt.*;
 
-public class Login {
+public final class Login {
 
     // Main frame initialisation
     private static JFrame loginFrame = new JFrame("Log in");
@@ -18,7 +18,7 @@ public class Login {
     private static JLabel passwordLabel = new JLabel("Password: ");
     private static JButton loginButton = new JButton("Enter");
     private static JTextArea loginMessage = new JTextArea();
-    private static Font messageFont = new Font("Arial", Font.PLAIN, 18);
+    private static Font messageFont = new Font("Calibri", Font.PLAIN, 18);
 
     // Panel initialisation
     private static JPanel messagePanel = new JPanel();
@@ -26,7 +26,7 @@ public class Login {
     private static JPanel passwordPanel = new JPanel();
     private static JPanel buttonPanel = new JPanel();
     private static Icon loginMenuLogo = new ImageIcon("src/resources/lgim.png");
-    private static JLabel imageLabel = new JLabel();
+    private static JLabel imagelabel = new JLabel();
 
     public static void launchLoginGui() {
 
@@ -46,8 +46,8 @@ public class Login {
         passwordPanel.add(passwordLabel);
         passwordPanel.add(passwordField);
         buttonPanel.add(loginButton);
-        imageLabel.setIcon(loginMenuLogo);
-        buttonPanel.add(imageLabel);
+        imagelabel.setIcon(loginMenuLogo);
+        buttonPanel.add(imagelabel);
 
 
         // Panels are then added to main frame here
@@ -74,6 +74,10 @@ public class Login {
         //TODO Need to actually close loginFrame, when we terminate our application.
         loginFrame.setVisible(false);
 //       loginFrame.dispatchEvent(new WindowEvent(loginFrame, WindowEvent.WINDOW_CLOSING));
+    }
+
+    public static void disposeLoginFrame() {
+        loginFrame.dispose();
     }
 
     public static void enableLoginFrame() {
