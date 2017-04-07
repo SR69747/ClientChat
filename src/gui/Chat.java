@@ -118,6 +118,14 @@ public final class Chat extends JPanel implements Runnable {
         return data;
     }
 
+    public static void displayPureHTML(String text) {
+        try {
+            editorKit.insertHTML(doc, doc.getLength(), text, 0, 0, null);
+        } catch (BadLocationException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * This method displays @param text in our messageDisplayPane.
      *
