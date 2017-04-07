@@ -26,7 +26,7 @@ public final class Login {
     private static JPanel passwordPanel = new JPanel();
     private static JPanel buttonPanel = new JPanel();
     private static Icon loginMenuLogo = new ImageIcon("src/resources/lgim.png");
-    private static JLabel imagelabel = new JLabel();
+    private static JLabel imageLabel = new JLabel();
 
     public static void launchLoginGui() {
 
@@ -46,8 +46,8 @@ public final class Login {
         passwordPanel.add(passwordLabel);
         passwordPanel.add(passwordField);
         buttonPanel.add(loginButton);
-        imagelabel.setIcon(loginMenuLogo);
-        buttonPanel.add(imagelabel);
+        imageLabel.setIcon(loginMenuLogo);
+        buttonPanel.add(imageLabel);
 
 
         // Panels are then added to main frame here
