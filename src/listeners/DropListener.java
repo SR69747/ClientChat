@@ -106,6 +106,7 @@ public final class DropListener implements DropTargetListener, Serializable {
                     File file = new File(path);
                     if (path.contains(".jpg") || path.contains(".png")) {
                         if (file.length() < 1000000L) {
+                            Chat.displayMessageInHTML("Image sent!", "orange", true);
                             Sender.sendImageToServer(file);
                         } else {
                             Chat.displayMessageInHTML("Error: File is too big", "red", false);
