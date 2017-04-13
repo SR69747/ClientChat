@@ -104,7 +104,7 @@ public final class DropListener implements DropTargetListener, Serializable {
                 if (o != null) {
                     String path = o.toString().substring(1, o.toString().length() - 1);
                     File file = new File(path);
-                    if (path.contains(".jpg") || path.contains(".png")) {
+                    if (path.contains(".jpg") || path.contains(".png") || path.contains(".gif")) {
                         if (file.length() < 1000000L) {
                             Chat.displayMessageInHTML("Image sent!", "orange", true);
                             Sender.sendImageToServer(file);
