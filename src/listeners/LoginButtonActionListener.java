@@ -1,5 +1,6 @@
 package listeners;
 
+import gui.Login;
 import networking.Protocol;
 import networking.Sender;
 import org.jasypt.util.text.StrongTextEncryptor;
@@ -29,21 +30,25 @@ public final class LoginButtonActionListener extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String passString = new String(this.passwordField.getPassword());
-        String loginDetails = String.format("%s,%s", this.usernameField.getText(), passString);
-        StrongTextEncryptor textEncryptor = new StrongTextEncryptor();
-        textEncryptor.setPassword(SECRET);
-        String myEncryptedDetails = textEncryptor.encrypt(loginDetails);
+        if (!usernameField.getText().isEmpty() && !passwordField.getText().isEmpty()) {
+            String passString = new String(this.passwordField.getPassword());
+            String loginDetails = String.format("%s,%s", this.usernameField.getText(), passString);
+            StrongTextEncryptor textEncryptor = new StrongTextEncryptor();
+            textEncryptor.setPassword(SECRET);
+            String myEncryptedDetails = textEncryptor.encrypt(loginDetails);
 
-        try {
-            Socket socket = new Socket(Protocol.HOST, Protocol.PORT);
-            System.out.println("Connected to: " + Protocol.HOST);
+            try {
+                Socket socket = new Socket(Protocol.HOST, Protocol.PORT);
+                System.out.println("Connected to: " + Protocol.HOST);
 
-            //Starting a new ClientReceiver Thread
-            new Thread(new Sender(socket, myEncryptedDetails)).start();
+                //Starting a new ClientReceiver Thread
+                new Thread(new Sender(socket, myEncryptedDetails)).start();
 
-        } catch (IOException e2) {
-            System.out.println("Error launching a client: " + e2.getMessage());
+            } catch (IOException e2) {
+                System.out.println("Error launching a client: " + e2.getMessage());
+            }
+        } else {
+            Login.invalidLoginMessage();
         }
     }
 }
