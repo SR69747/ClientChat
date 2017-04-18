@@ -5,6 +5,7 @@ import listeners.*;
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
+import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 
 import java.awt.*;
@@ -18,7 +19,7 @@ public final class Chat extends JPanel implements Runnable {
 
     private static JFrame mainFrame = new JFrame();
     private static final int WINDOW_WIDTH = 500;
-    private static final int WINDOW_HEIGHT = 600;
+    private static final int WINDOW_HEIGHT = 500;
 
     //Initialise Components for Chat gui
     private static JButton sendButton = new JButton("Send");
@@ -40,6 +41,7 @@ public final class Chat extends JPanel implements Runnable {
 
     private static ImageIcon onlineIcon = new ImageIcon("src/resources/onlineIcon.jpg");
     private static ImageIcon offlineIcon = new ImageIcon("src/resources/offlineIcon.jpg");
+    private static ImageIcon welcomeGIF = new ImageIcon("src/resources/welcome.gif");
 
     public void run() {
 
@@ -67,7 +69,8 @@ public final class Chat extends JPanel implements Runnable {
             editorKit = (CustomHTMLEditorKit) messageDisplayPane.getEditorKit();
             doc = (HTMLDocument) messageDisplayPane.getDocument();
 
-            displayMessageInHTML("Welcome to chatting GUI", "blue", false);
+            displayMessageInHTML("Welcome to chatting GUI", "#257894", false);
+
 
             messageSendTextField.addKeyListener(new TextFieldKeyListener());
             messageSendTextField.setDropTarget(new DropTarget(messageSendTextField, 0, new DropListener(), true));
@@ -85,7 +88,6 @@ public final class Chat extends JPanel implements Runnable {
             menuBar.add(settingsMenu);
 
             // set user table properties
-            //TODO Set onlineUserTable cells unmodifiable.
             userScrollPane.setPreferredSize(new Dimension(135, 500));
             onlineUserTable.setModel(customTableModel);
             onlineUserTable.setAutoCreateRowSorter(true);
@@ -133,7 +135,7 @@ public final class Chat extends JPanel implements Runnable {
      */
     public static void displayMessageInHTML(String text, String color, boolean showTimeStamp) {
         try {
-            editorKit.insertHTML(doc, doc.getLength(), "<b style=\"color:" + color + "\">" + ((showTimeStamp) ? getCurrentTimeStamp() : "") + text + "</span>", 0, 0, null);
+            editorKit.insertHTML(doc, doc.getLength(), "<b style=\"color:" + color + "; font: calibri\">" + ((showTimeStamp) ? getCurrentTimeStamp() : "") + text + "</span>", 0, 0, null);
         } catch (BadLocationException | IOException e) {
             e.printStackTrace();
         }
