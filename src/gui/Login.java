@@ -35,7 +35,7 @@ public final class Login {
     private static JPanel usernamePanel = new JPanel();
     private static JPanel passwordPanel = new JPanel();
     private static JPanel buttonPanel = new JPanel();
-    private static Icon loginMenuLogo = new ImageIcon("src/resources/lgim.png");
+    private static Icon loginMenuLogo = new ImageIcon("image.png");
     private static JLabel imageLabel = new JLabel();
 
     // Registration Component initialisation
