@@ -11,29 +11,37 @@ public class Main {
         try {
             Properties props = new Properties();
 
+            String darkBlue = "71 166 198";
+            String lightBlue = "150 231 247";
+            String black = "0 0 0";
+            String white = "255 255 255";
+            String grey = "244 242 232";
+
+
+
             props.put("logoString", "LGIM");
             props.put("licenseKey", "LICENSE KEY");
 
-            props.put("selectionBackgroundColor", "180 240 197");
-            props.put("menuSelectionBackgroundColor", "180 240 197");
+            props.put("selectionBackgroundColor", lightBlue);
+            props.put("menuSelectionBackgroundColor", lightBlue);
 
-            props.put("controlColor", "218 254 230");
-            props.put("controlColorLight", "218 254 230");
-            props.put("controlColorDark", "180 240 197");
+            props.put("controlColor", lightBlue);
+            props.put("controlColorLight", grey);
+            props.put("controlColorDark", grey);
 
-            props.put("buttonColor", "218 230 254");
-            props.put("buttonColorLight", "255 255 255");
-            props.put("buttonColorDark", "244 242 232");
+            props.put("buttonColor", lightBlue);
+            props.put("buttonColorLight", white);
+            props.put("buttonColorDark", grey);
 
-            props.put("rolloverColor", "218 254 230");
-            props.put("rolloverColorLight", "218 254 230");
-            props.put("rolloverColorDark", "180 240 197");
+            props.put("rolloverColor", lightBlue);
+            props.put("rolloverColorLight", grey);
+            props.put("rolloverColorDark", lightBlue);
 
-            props.put("windowTitleForegroundColor", "0 0 0");
-            props.put("windowTitleBackgroundColor", "180 240 197");
-            props.put("windowTitleColorLight", "218 254 230");
-            props.put("windowTitleColorDark", "180 240 197");
-            props.put("windowBorderColor", "218 254 230");
+            props.put("windowTitleForegroundColor", white);
+            props.put("windowTitleBackgroundColor", black);
+            props.put("windowTitleColorLight", lightBlue);
+            props.put("windowTitleColorDark", darkBlue);
+            props.put("windowBorderColor", darkBlue);
 
             // set your theme
             SmartLookAndFeel.setCurrentTheme(props);
