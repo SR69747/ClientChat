@@ -1,5 +1,5 @@
 # ChatClientGUI
 
-Chat client for ApprChatServer
+Client for chat server.
 
 :)
